@@ -25,6 +25,7 @@ export default {
   data: () => ({
     drawer: false,
     group: null,
+    value: null
   }),
 };
 </script>
