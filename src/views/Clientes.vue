@@ -1,7 +1,14 @@
 <template>
   <div class="about">
     <h1>Clientes</h1>
-    {{ clientes }}
+    <v-data-table
+      :headers="headers"
+      :items="clientes"
+      :items-per-page="5"
+      class="elevation-1"
+    ></v-data-table>
+    <div v-for="item in clientes" :key="item.message">
+    </div>
   </div>
 </template>
 <script>
@@ -13,6 +20,15 @@ export default {
   data() {
     return {
       clientes: [],
+      headers: [
+          {
+            text: 'Nome',
+            align: 'start',
+            value: 'nome',
+          },
+          { text: 'Telefone', value: 'telefone' },
+          { text: 'CPF', value: 'cpf' },
+        ],
       unsubscribe: null
     };
   },
