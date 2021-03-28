@@ -49,7 +49,7 @@
             </v-toolbar>
             <v-container>
               <v-row cols="12">
-                <!-- <v-file-input v-model="form.foto" accept="image/*" label="Foto"></v-file-input> -->
+                <v-file-input :value="form.foto" v-model="form.foto" accept="image/*" label="Foto"></v-file-input>
               </v-row>
               <v-row>
                 <v-col cols="12" md="6">
@@ -101,7 +101,9 @@
 </template>
 <script>
 import firebase from "../firebase/index";
+import 'firebase/storage';
 const db = firebase.firestore();
+
 
 export default {
   name: "produtos",
@@ -138,6 +140,7 @@ export default {
         this.form.nome &&
         this.form.descricao &&
         this.form.faixaEtaria &&
+        this.form.foto &&
         this.form.preco1 &&
         this.form.preco2 &&
         this.form.preco3
@@ -146,9 +149,13 @@ export default {
   },
   methods: {
     resetForm () {
-      this.form = Object.assign({}, this.defaultForm)
-      this.$refs.form.reset()
-      this.dialog = false
+      const storage = firebase.storage();
+
+      storage.ref('mountains.jpg').put(this.form.foto);
+ 
+      // this.form = Object.assign({}, this.defaultForm)
+      // this.$refs.form.reset()
+      // this.dialog = false
     },
     submit () {
       var self = this
