@@ -150,8 +150,14 @@ export default {
   methods: {
     resetForm () {
       const storage = firebase.storage();
-
-      storage.ref('mountains.jpg').put(this.form.foto);
+      console.log(this.form.foto)
+      storage.ref(this.form.foto.name).put(this.form.foto)
+      .then(
+        console.log('sucesso')
+      )
+      .catch((error) => {
+        console.log(error)
+      });
  
       // this.form = Object.assign({}, this.defaultForm)
       // this.$refs.form.reset()
