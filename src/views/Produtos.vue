@@ -194,10 +194,7 @@ export default {
     },
     buscarFoto (nomeFoto) {
       const storage = firebase.storage().ref();
-
       storage.child( `produtos/${nomeFoto}`).getDownloadURL().then(function(url) {
-        console.log(url)
-        
         return url;
     }).catch(function(error) {
       this.mostraSnackba('danger', '', `Não foi possível mostrar a imagem mensagem técnica ${error}`)
