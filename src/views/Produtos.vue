@@ -220,7 +220,7 @@ export default {
         self.produtos = _produtos;
       })
       .catch((error) => {
-        console.log("Error getting documents: ", error);
+        this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível buscar os produtos mensagem técnica: ${error}`);
       });
     }
   },
