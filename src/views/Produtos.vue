@@ -12,11 +12,9 @@
             <div>{{ produto.descricao }}</div>
           </v-card-text>
           <v-divider class="mx-4"></v-divider>
-          <v-card-text>
-            <v-chip-group active-class="deep-purple accent-4 white--text" column>
-              <v-chip>10 dias - R$ {{ produto.preco1 }}</v-chip> 
-              <v-chip>20 dias - R$ {{ produto.preco2 }}</v-chip>
-              <v-chip>30 dias - R$ {{ produto.preco3 }}</v-chip>
+          <v-card-text >
+            <v-chip-group v-for="(preco) in produto.precos" :key="preco.id" active-class="deep-purple accent-4 white--text">
+              <v-chip>{{ preco.dias }} dias - R$ {{ preco.preco }}</v-chip>
             </v-chip-group>
           </v-card-text>
 
@@ -147,9 +145,7 @@ export default {
         this.form.descricao &&
         this.form.faixaEtaria &&
         this.form.foto &&
-        this.form.preco1 &&
-        this.form.preco2 &&
-        this.form.preco3
+        this.form.precos
       )
     },
   },
@@ -172,9 +168,7 @@ export default {
           foto: nomeFoto,
           descricao: self.form.descricao,
           faixaEtaria: self.form.faixaEtaria,
-          preco1: self.form.preco1,
-          preco2: self.form.preco2,
-          preco4: self.form.preco3
+          precos: self.form.precos
         })
         .then(() => {
           this.mostraSnackbar('success', 'mdi-checkbox-marked-circle', 'Cadastro realizado com sucesso');
@@ -212,9 +206,7 @@ export default {
             descricao: doc.data().descricao,
             localFoto: doc.data().localFoto,
             faixaEtaria: doc.data().faixaEtaria,
-            preco1: doc.data().preco1,
-            preco2: doc.data().preco2,
-            preco3: doc.data().preco3
+            precos: doc.data().precos
           });
         });
         self.produtos = _produtos;
