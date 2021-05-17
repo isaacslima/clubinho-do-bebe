@@ -158,10 +158,10 @@ export default {
     salvar () {
       this.loading = true;
       var self = this
-      const storage = firebase.storage();
+      const storage = firebase.storage().ref();
       var nomeFoto = `${utils.newGuid()}.png`
 
-      storage.ref(nomeFoto).put(this.form.foto)
+      storage.child(`produtos/${nomeFoto}`).put(this.form.foto)
       .then(
         db.collection("produtos").add({
           nome: self.form.nome,
