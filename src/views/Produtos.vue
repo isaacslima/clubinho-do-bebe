@@ -4,7 +4,7 @@
     <v-row>
       <v-col cols="12" md="3"  v-for="(produto, index) in produtos" :key="produto.id">
         <v-card class="mx-auto my-12" max-width="374" :key="index">
-          <img height="150" :src="produto.localFoto" />
+          <img height="150" :src="produto.urlFoto"/>
           <v-card-title>{{ produto.nome }}  
              <v-chip>{{ produto.faixaEtaria }}</v-chip> 
           </v-card-title>
@@ -94,7 +94,6 @@ import firebase from "../firebase/index";
 import utils from "../shared/utils"
 import 'firebase/storage';
 const db = firebase.firestore();
-
 
 export default {
   name: "produtos",
@@ -193,6 +192,17 @@ export default {
       this.icon = icon
       this.color = color
     },
+    buscarFoto (nomeFoto) {
+      const storage = firebase.storage().ref();
+
+      storage.child( `produtos/${nomeFoto}`).getDownloadURL().then(function(url) {
+        console.log(url)
+        
+        return url;
+    }).catch(function(error) {
+      this.mostraSnackba('danger', '', `Não foi possível mostrar a imagem mensagem técnica ${error}`)
+    });
+    },
     buscarProdutos () {
       let _produtos = [];
       var self = this
@@ -200,14 +210,15 @@ export default {
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
+          var url = self.buscarFoto(doc.data().foto);
           _produtos.push({
             id: doc.id,
             nome: doc.data().nome,
             descricao: doc.data().descricao,
-            localFoto: doc.data().localFoto,
             faixaEtaria: doc.data().faixaEtaria,
             precos: doc.data().precos,
-            foto: doc.data().foto
+            foto: doc.data().foto,
+            urlFoto: url
           });
         });
         self.produtos = _produtos;
