@@ -16,7 +16,7 @@
 					</v-card-text>
 					<v-card-actions>
 						<v-spacer></v-spacer>
-						<v-btn color="primary" @click="doLogin()">Entrar</v-btn>
+						<v-btn color="primary" @click="doLogin()" :disabled="loading" depressed >Entrar</v-btn>
 					</v-card-actions>
 				</v-card>
 			</v-col>
@@ -30,14 +30,20 @@ import Vue from 'vue'
 export default {
 	data: () => ({
     email: '',
-    password: ''
+    password: '',
+		loading: false
   }),
   methods: {
     doLogin() {
+			var self = this
+			this.loading = true;
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
-        .then(() => {
+        .then((userCredencial) => {
+					var user = userCredencial.user;
+					console.log(user);
           this.$router.replace('/home')
         }).catch(function () {
+					self.loading = false;
           // self.snackbar = true
           // self.color = 'error'
           // self.msg = 'Senha ou email incorretos'
