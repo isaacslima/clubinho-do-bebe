@@ -31,7 +31,7 @@
     <v-row justify="center">
       <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-card>
-          <v-form ref="form" @submit.prevent="submit">
+          <v-form ref="form" @submit.prevent="salvar">
             <v-toolbar dark color="primary">
               <v-btn icon dark @click="resetForm">
                 <v-icon>mdi-close</v-icon>
@@ -66,33 +66,25 @@
                   </v-textarea>
                 </v-col>
               </v-row>
-              <v-row>
+              <v-row v-for="(preco, index) in form.precos" :key="preco.id">
+                {{ index }}
                 <v-col cols="12" md="4">
-                  <v-text-field outlined v-model="form.preco1" label="Preço 10 dias" required></v-text-field>
+                  <v-text-field outlined v-model="preco.preco" type="number" label="Valor" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-text-field outlined v-model="form.preco2" label="Preço 20 dias" required></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field outlined v-model="form.preco3" label="Preço 30 dias" required></v-text-field>
+                  <v-text-field outlined v-model="preco.dias" type="number" label="Dias" required></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
           </v-form>
         </v-card>
-        <v-snackbar v-model="snackbarFail" color="danger">
-          <v-icon dark>
-            mdi-checkbox-marked-circle
-          </v-icon>
-          <span>Registration fail!</span>
-        </v-snackbar>
       </v-dialog>
     </v-row>
-    <v-snackbar v-model="snackbarSucess" color="success">
+    <v-snackbar v-model="snackbar" :color="color">
       <v-icon dark>
-        mdi-checkbox-marked-circle
+        {{ icon }}
       </v-icon>
-      <span>Registration successful!</span>
+      <span>{{ mensagem }}</span>
     </v-snackbar>
     <v-btn color="pink" dark absolute bottom right fab @click="dialog = true">
       <v-icon>mdi-plus</v-icon>
@@ -101,6 +93,7 @@
 </template>
 <script>
 import firebase from "../firebase/index";
+import utils from "../shared/utils"
 import 'firebase/storage';
 const db = firebase.firestore();
 
@@ -113,9 +106,20 @@ export default {
         nome: '',
         descricao: '',
         faixaEtaria: '',
-        preco1: '',
-        preco2: '',
-        preco3: '',
+        precos: [
+          { 
+            preco: 0, 
+            dias: 10, 
+          },
+          { 
+            preco: 0, 
+            dias: 20, 
+          },
+          { 
+            preco: 0, 
+            dias: 30, 
+          }
+        ],
       })
     return {
       form: Object.assign({}, defaultForm),
@@ -123,6 +127,9 @@ export default {
       unsubscribe: null,
       dialog: false,
       defaultForm,
+      color: '',
+      icon: '',
+      mensagem: '',
       faixasEtarias : [
         '0 a 3 meses',
         '3 a 6 meses',
@@ -130,8 +137,7 @@ export default {
         '9 a 12 meses',
         'acima de 12 meses'
       ],
-      snackbarSucess: false,
-      snackbarFail: false
+      snackbar: false
     };
   },
   computed: {
@@ -149,41 +155,49 @@ export default {
   },
   methods: {
     resetForm () {
-      const storage = firebase.storage();
-      console.log(this.form.foto)
-      storage.ref(this.form.foto.name).put(this.form.foto)
-      .then(
-        console.log('sucesso')
-      )
-      .catch((error) => {
-        console.log(error)
-      });
- 
-      // this.form = Object.assign({}, this.defaultForm)
-      // this.$refs.form.reset()
-      // this.dialog = false
+      this.form = Object.assign({}, this.defaultForm)
+      this.$refs.form.reset()
+      this.dialog = false
     },
-    submit () {
+    salvar () {
+      this.loading = true;
       var self = this
-      db.collection("produtos").add({
+      const storage = firebase.storage();
+      var nomeFoto = `${utils.newGuid()}.png`
+
+      storage.ref(nomeFoto).put(this.form.foto)
+      .then(
+        db.collection("produtos").add({
           nome: self.form.nome,
+          foto: nomeFoto,
           descricao: self.form.descricao,
           faixaEtaria: self.form.faixaEtaria,
           preco1: self.form.preco1,
           preco2: self.form.preco2,
           preco4: self.form.preco3
-      })
-      .then(() => {
-        this.snackbarSucess = true
-        this.dialog = false
-        this.resetForm()
-        this.buscarProdutos()
-      })
+        })
+        .then(() => {
+          this.mostraSnackbar('success', 'mdi-checkbox-marked-circle', 'Cadastro realizado com sucesso');
+          this.dialog = false
+          this.resetForm()
+          this.buscarProdutos()
+        })
+        .catch((error) => {
+          storage.ref(nomeFoto).delete()
+          this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Cadastro não foi realizado mensagem técnica: ${error}`);
+        })
+
+      )
       .catch((error) => {
-        this.snackbarFail = true
-        console.error("Error writing document: ", error);
+        this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível enviar a foto mensagem técnica: ${error}`);
       });
-      
+    },
+    mostraSnackbar(color, icon, mensagem) {
+      this.snackbar = true
+      this.loading = false
+      this.mensagem = mensagem
+      this.icon = icon
+      this.color = color
     },
     buscarProdutos () {
       let _produtos = [];
