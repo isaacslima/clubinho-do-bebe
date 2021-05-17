@@ -206,7 +206,8 @@ export default {
             descricao: doc.data().descricao,
             localFoto: doc.data().localFoto,
             faixaEtaria: doc.data().faixaEtaria,
-            precos: doc.data().precos
+            precos: doc.data().precos,
+            foto: doc.data().foto
           });
         });
         self.produtos = _produtos;
