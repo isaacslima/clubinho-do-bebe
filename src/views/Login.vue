@@ -1,24 +1,21 @@
 <template>
-	<v-container class="fill-height" fluid>
-		<v-row align="center" justify="center">
+	<v-container class="fill-height login" fluid>
+		<v-row align="center" justify="bottom">
 			<v-col cols="12" sm="8" md="4">
-				<v-card class="elevation-12">
-					<v-toolbar color="primary" dark flat>
-						<v-toolbar-title>Login</v-toolbar-title>
-						<v-spacer></v-spacer>
-					</v-toolbar>
-					<v-card-text>
-						<v-form>
-							<v-text-field label="Login" name="login" v-model="email" prepend-icon="mdi-account" type="text"></v-text-field>
-							<v-text-field id="password" label="Password" v-model="password" name="password" prepend-icon="mdi-lock" type="password">
-							</v-text-field>
+				<div>
+					Login
+				</div>
+				<div>
+					<v-form>
+						<v-text-field label="Email" name="email" v-model="email" type="text" solo placeholder="Digite seu e-mail">
+						</v-text-field>
+						<v-text-field id="password" label="Senha" solo v-model="password" name="password" type="password" placeholder="Digite sua senha">
+						</v-text-field>
 						</v-form>
-					</v-card-text>
-					<v-card-actions>
-						<v-spacer></v-spacer>
-						<v-btn color="primary" @click="doLogin()" :disabled="loading" depressed >Entrar</v-btn>
-					</v-card-actions>
-				</v-card>
+				</div>
+				<div>
+					<v-btn color="primary" @click="doLogin()" :disabled="loading" depressed >Entrar</v-btn>
+				</div>
 			</v-col>
 		</v-row>
 	</v-container>
@@ -56,3 +53,9 @@ export default {
   }
 }
 </script>
+
+<style>
+	.login {
+		background: linear-gradient(0deg, rgba(255,255,255,1) 32%, rgba(206,248,255,1) 67%, rgba(224,250,255,1) 100%);
+	}
+</style>
