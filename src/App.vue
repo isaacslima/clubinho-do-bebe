@@ -1,8 +1,31 @@
 <template>
   <v-app>
+    <div>
+      <v-app-bar
+      color="deep-purple accent-4"
+      dense
+      dark elevate-on-scroll
+      >
+        <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
+
+    
+        <v-toolbar-title>
+          <v-icon
+            large
+          >
+            mdi-home
+          </v-icon>
+          Home
+        </v-toolbar-title>
+      </v-app-bar>
+    </div>
+    
     <v-main>
       <router-view />
     </v-main>
+    
+
+<!-- 
     <v-bottom-navigation v-model="value">
       <v-btn value="produtos" to="/produtos">
         <span>Produtos</span>
@@ -16,7 +39,7 @@
         <span>Home</span>
         <v-icon>mdi-home</v-icon>
       </v-btn>
-    </v-bottom-navigation>
+    </v-bottom-navigation> -->
   </v-app>
 </template>
 <script>

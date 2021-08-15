@@ -26,7 +26,7 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row justify="center">
+    <v-row>
       <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-card>
           <v-form ref="form" @submit.prevent="salvar">
