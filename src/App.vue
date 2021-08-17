@@ -2,20 +2,21 @@
   <v-app>
     <div>
       <v-app-bar
-      color="deep-purple accent-4"
+      color="white"
       dense
-      dark elevate-on-scroll
+      elevate-on-scroll
       >
         <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
 
     
-        <v-toolbar-title>
+        <v-toolbar-title color="cyan">
           <v-icon
             large
+            color="cyan"
           >
             mdi-home
           </v-icon>
-          Home
+          <span class="title-app-bar">Home</span>
         </v-toolbar-title>
       </v-app-bar>
     </div>
@@ -52,3 +53,9 @@ export default {
   }),
 };
 </script>
+
+<style>
+.title-app-bar{
+  color: #00BCD4;
+}
+</style>
