@@ -1,30 +1,41 @@
 <template>
   <div class="about">
     <h1>Produtos</h1>
-    <v-row>
-      <v-col cols="12" md="3"  v-for="(produto, index) in produtos" :key="produto.id">
-        <v-card class="mx-auto my-12" max-width="374" :key="index">
-          <img height="150" :src="produto.urlFoto"/>
-          <v-card-title>{{ produto.nome }}  
-             <v-chip>{{ produto.faixaEtaria }}</v-chip> 
-          </v-card-title>
-          <v-card-text>
-            <div>{{ produto.descricao }}</div>
-          </v-card-text>
-          <v-divider class="mx-4"></v-divider>
-          <v-card-text >
-            <v-chip-group v-for="(preco) in produto.precos" :key="preco.id" active-class="deep-purple accent-4 white--text">
-              <v-chip>{{ preco.dias }} dias - R$ {{ preco.preco }}</v-chip>
-            </v-chip-group>
-          </v-card-text>
-
-          <v-card-actions>
+    <v-row cols="12" md="12" style="margin-top: 31px"  v-for="(produto, index) in produtos" :key="produto.id">
+      <v-container>
+        <v-card class="mx-auto card-products" color="blue lighten-4" outlined>
+          <v-chip class="info-mounth" dark color="indigo" dense x-small>{{ produto.faixaEtaria }}</v-chip> 
+          <v-list-item three-line :key="index">
+            <v-list-item-avatar
+              tile
+              size="80"
+            >
+            <img height="150" :src="produto.urlFoto"/>
+            </v-list-item-avatar>
             <v-btn color="deep-purple lighten-2" text @click="editarProduto(produto.id)">
-              Editar
-            </v-btn>
+                    Editar
+                  </v-btn>
+            <v-list-item-content>
+              <v-list-item-title class="text-h5 mb-1">
+                {{ produto.nome }}
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                {{ produto.descricao }}
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-card-actions>
+            <v-row v-for="(preco) in produto.precos" :key="preco.id" >
+              <v-col :cols="12/produto.precos" >
+                <div class="label-price">
+                  <v-icon dark>mdi-calendar</v-icon>
+                  {{ preco.dias }} R$ {{ preco.preco }}
+                </div>
+              </v-col>
+            </v-row>
           </v-card-actions>
         </v-card>
-      </v-col>
+      </v-container>
     </v-row>
     <v-row>
       <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
@@ -235,5 +246,19 @@ export default {
   height: 60px !important;
   min-width: 60px !important;
   width: 60px !important;
+}
+.card-products {
+  margin-bottom: 31px;
+}
+.label-price{
+  background-color: #007E9E;
+  border-radius: 3px;
+  color: white;
+  padding: 3px;
+  display: inline-block
+}
+.info-mounth{
+  position:relative;
+  top: -14px;
 }
 </style>

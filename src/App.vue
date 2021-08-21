@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar fixed color="white" dense elevate-on-scroll>
+    <v-app-bar class="top-bar" fixed color="white" dense elevate-on-scroll>
       <v-toolbar-title color="cyan">
         <v-icon large color="cyan">
           mdi-home
@@ -28,7 +28,7 @@ export default {
 .title-app-bar{
   color: #00BCD4;
 }
-.top-bar{
-  border-bottom: #EB7A13 solid 3px;
+.v-toolbar__content {
+  border-bottom: #EB7A13 solid 2px;
 }
 </style>
