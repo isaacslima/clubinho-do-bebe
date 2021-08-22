@@ -11,42 +11,39 @@
               size="80"
             >
             <img height="150" :src="produto.urlFoto"/>
-            </v-list-item-avatar>
-            <v-row>
-              <v-col>
-                
+            </v-list-item-avatar>                
             <v-list-item-content>
-              
               <v-list-item-title color="#EB7A13" class="text-h5 mb-1">
-                {{ produto.nome }}
+                <v-row>
+                  <v-col cols="8">
+                    {{ produto.nome }}
+                  </v-col>
+                  <v-col cols="2">
+                    <v-btn small color="deep-purple lighten-2" outlined @click="editarProduto(produto.id)">
+                      Editar
+                    </v-btn>
+                  </v-col >
+                  <v-col cols="2">
+                    <v-btn small color="deep-purple lighten-2" outlined @click="excluirProduto(produto.id)">
+                      Excluir
+                    </v-btn>
+                  </v-col>
+                </v-row>
               </v-list-item-title>
               <v-list-item-subtitle>
                 {{ produto.descricao }}
               </v-list-item-subtitle>
-              <v-row class="mb-6" >
-                {{ produto.precos }}
-                <v-col v-for="(preco) in produto.precos" :key="preco.id" :cols="12/produto.precos.length" >
-                  <div class="label-price">
-                    <v-icon dark>mdi-calendar</v-icon>
-                    {{ preco.dias }} R$ {{ preco.preco }}
-                  </div>
-                </v-col>
-              </v-row>
+              <v-container fluid>
+                <v-row >
+                  <v-col v-for="(preco) in produto.precos" :key="preco.id" cols="4" >
+                    <div class="label-price">
+                      <v-icon dark>mdi-calendar</v-icon>
+                      {{ preco.dias }} R$ {{ preco.preco }}
+                    </div>
+                  </v-col>
+                </v-row>  
+              </v-container>
             </v-list-item-content>
-              </v-col>
-              <v-col>
-                <v-btn color="deep-purple lighten-2" text @click="editarProduto(produto.id)">
-                    Editar
-                  </v-btn>
-              </v-col>
-              <v-col>
-                <v-btn color="deep-purple lighten-2" text @click="editarProduto(produto.id)">
-                    Excluir
-                  </v-btn>
-              </v-col>
-
-            </v-row>
-            
           </v-list-item>
         </v-card>
       </v-container>
@@ -59,7 +56,7 @@
               <v-btn icon dark @click="resetForm">
                 <v-icon>mdi-close</v-icon>
               </v-btn>
-              <v-toolbar-title>Criar Produto</v-toolbar-title>
+              <v-toolbar-title>{{ acaoProduto }}</v-toolbar-title>
               <v-spacer></v-spacer>
               <v-toolbar-items>
                 <v-btn dark text @click="resetForm" type="button">
@@ -144,6 +141,7 @@ export default {
         ],
       })
     return {
+      acaoProduto: '',
       form: Object.assign({}, defaultForm),
       produtos: [],
       unsubscribe: null,
@@ -178,6 +176,12 @@ export default {
       this.form = Object.assign({}, this.defaultForm)
       this.$refs.form.reset()
       this.dialog = false
+    },
+    editarProduto (idProduto) {
+      this.acaoProduto = 'Editar Produto'
+      this.form.id = idProduto
+      this.form.nome = 'teste'
+      this.dialog = true;
     },
     salvar () {
       this.loading = true;
@@ -244,6 +248,7 @@ export default {
           });
         });
         self.produtos = _produtos;
+        console.log(self.produtos);
       })
       .catch((error) => {
         this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível buscar os produtos mensagem técnica: ${error}`);
