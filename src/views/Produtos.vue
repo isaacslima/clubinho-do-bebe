@@ -6,11 +6,8 @@
         <v-card class="mx-auto card-products" color="blue lighten-4" outlined>
           <v-chip class="info-mounth" dark color="#007E9E" dense x-small>{{ produto.faixaEtaria }}</v-chip> 
           <v-list-item class="item-inside-card" three-line :key="index">
-            <v-list-item-avatar
-              tile
-              size="80"
-            >
-            <img height="150" :src="produto.urlFoto"/>
+            <v-list-item-avatar tile size="80">
+              <img height="150" :src="produto.urlFoto"/>
             </v-list-item-avatar>                
             <v-list-item-content>
               <v-list-item-title color="#EB7A13" class="text-h5 mb-1">
@@ -52,7 +49,7 @@
       <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-card>
           <v-form ref="form" @submit.prevent="salvar">
-            <v-toolbar dark color="primary">
+            <v-app-bar dark fixed color="primary" dense elevate-on-scroll>
               <v-btn icon dark @click="resetForm">
                 <v-icon>mdi-close</v-icon>
               </v-btn>
@@ -66,8 +63,8 @@
                   Salvar
                 </v-btn>
               </v-toolbar-items>
-            </v-toolbar>
-            <v-container>
+            </v-app-bar>
+            <v-container class="container-add-edit">
               <v-row cols="12">
                 <v-file-input :value="form.foto" v-model="form.foto" accept="image/*" label="Foto"></v-file-input>
               </v-row>
@@ -106,7 +103,7 @@
       </v-icon>
       <span>{{ mensagem }}</span>
     </v-snackbar>
-    <v-btn color="pink" dark absolute bottom right fab @click="dialog = true">
+    <v-btn color="pink" dark absolute bottom right fab @click="adicionarProduto()">
       <v-icon>mdi-plus</v-icon>
     </v-btn>
   </div>
@@ -166,7 +163,6 @@ export default {
         this.form.nome &&
         this.form.descricao &&
         this.form.faixaEtaria &&
-        this.form.foto &&
         this.form.precos
       )
     },
@@ -177,11 +173,24 @@ export default {
       this.$refs.form.reset()
       this.dialog = false
     },
+    adicionarProduto () {
+      this.acaoProduto = 'Adicionar Produto'
+      this.dialog = true;
+    },
     editarProduto (idProduto) {
       this.acaoProduto = 'Editar Produto'
       this.form.id = idProduto
-      this.form.nome = 'teste'
       this.dialog = true;
+      db.collection('produtos')
+      .doc(idProduto)
+      .get()
+      .then(snapshot => {
+        const document = snapshot.data()
+        this.form.nome = document.nome
+        this.form.faixaEtaria = document.faixaEtaria
+        this.form.descricao = document.descricao
+        this.form.precos = document.precos
+      })
     },
     salvar () {
       this.loading = true;
@@ -248,7 +257,7 @@ export default {
           });
         });
         self.produtos = _produtos;
-        console.log(self.produtos);
+        
       })
       .catch((error) => {
         this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível buscar os produtos mensagem técnica: ${error}`);
@@ -282,5 +291,8 @@ export default {
 }
 .item-inside-card{
   margin-top: -30px;
+}
+.container-add-edit{
+  margin-top: 48px;
 }
 </style>
