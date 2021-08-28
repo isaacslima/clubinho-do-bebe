@@ -7,7 +7,7 @@
           <v-chip class="info-mounth" dark color="#007E9E" dense x-small>{{ produto.faixaEtaria }}</v-chip> 
           <v-list-item class="item-inside-card" three-line :key="index">
             <v-list-item-avatar tile size="80">
-              <img height="150" :src="produto.urlFoto"/>
+              <v-img height="150" :src="produto.urlFoto"/>
             </v-list-item-avatar>                
             <v-list-item-content>
               <v-list-item-title color="#EB7A13" class="text-h5 mb-1">
@@ -66,7 +66,17 @@
             </v-app-bar>
             <v-container class="container-add-edit">
               <v-row cols="12">
-                <v-file-input :value="form.foto" v-model="form.foto" accept="image/*" label="Foto"></v-file-input>
+                <v-file-input 
+                  :value="form.foto" 
+                  v-model="form.foto" 
+                  accept="image/*" 
+                  label="Foto"
+                  @change="onFilePicked"
+                >
+                </v-file-input>
+              </v-row>
+              <v-row cols="12">
+                <v-img :src="imageUrl" height="150" width="150"/>
               </v-row>
               <v-row>
                 <v-col cols="12" md="6">
@@ -139,6 +149,7 @@ export default {
       })
     return {
       acaoProduto: '',
+      imageUrl: '',
       form: Object.assign({}, defaultForm),
       produtos: [],
       unsubscribe: null,
@@ -172,6 +183,7 @@ export default {
       this.form = Object.assign({}, this.defaultForm)
       this.$refs.form.reset()
       this.dialog = false
+      this.imageUrl = ''
     },
     adicionarProduto () {
       this.acaoProduto = 'Adicionar Produto'
@@ -190,6 +202,8 @@ export default {
         this.form.faixaEtaria = document.faixaEtaria
         this.form.descricao = document.descricao
         this.form.precos = document.precos
+        this.form.foto = document.foto
+        this.buscarFotoEdicao(this.form.foto)
       })
     },
     salvar () {
@@ -217,7 +231,6 @@ export default {
           storage.ref(nomeFoto).delete()
           this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Cadastro não foi realizado mensagem técnica: ${error}`);
         })
-
       )
       .catch((error) => {
         this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível enviar a foto mensagem técnica: ${error}`);
@@ -231,12 +244,22 @@ export default {
       this.color = color
     },
     buscarFoto (nomeFoto) {
+      var self = this
       const storage = firebase.storage().ref();
       storage.child( `produtos/${nomeFoto}`).getDownloadURL().then(function(url) {
         return url;
-    }).catch(function(error) {
-      this.mostraSnackba('danger', '', `Não foi possível mostrar a imagem mensagem técnica ${error}`)
-    });
+      }).catch(function(error) {
+        self.mostraSnackbar('danger', '', `Não foi possível mostrar a imagem! Mensagem técnica ${error}`)
+      });
+    },
+    buscarFotoEdicao(nomeFoto){
+      var self = this
+      const storage = firebase.storage().ref();
+      storage.child( `produtos/${nomeFoto}`).getDownloadURL().then(function(url) {
+        self.imageUrl = url;
+      }).catch(function(error) {
+        self.mostraSnackbar('danger', '',`Não foi possível mostrar a imagem! Mensagem técnica ${error}`)
+      });
     },
     buscarProdutos () {
       let _produtos = [];
@@ -245,24 +268,34 @@ export default {
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          var url = self.buscarFoto(doc.data().foto);
           _produtos.push({
             id: doc.id,
             nome: doc.data().nome,
             descricao: doc.data().descricao,
             faixaEtaria: doc.data().faixaEtaria,
             precos: doc.data().precos,
-            foto: doc.data().foto,
-            urlFoto: url
+            foto: doc.data().foto
           });
         });
         self.produtos = _produtos;
-        
+      })
+      .finally(() => {
+        self.produtos.forEach(element => {
+          var foto = self.buscarFoto(element.foto);
+          element.urlFoto = foto;
+        });
       })
       .catch((error) => {
-        this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível buscar os produtos mensagem técnica: ${error}`);
+        self.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível buscar os produtos mensagem técnica: ${error}`);
       });
-    }
+    },
+    onFilePicked (){
+      const fileReader = new FileReader()
+      fileReader.addEventListener('load', () => {
+        this.imageUrl = fileReader.result
+      })
+      fileReader.readAsDataURL(this.form.foto)
+    },
   },
   mounted () {
     this.buscarProdutos()
