@@ -168,6 +168,9 @@ export default {
       snackbar: false
     };
   },
+  firestore: {
+    produtos: db.collection('produtos'),
+  },
   computed: {
     formIsValid () {
       return (
@@ -296,10 +299,18 @@ export default {
       })
       fileReader.readAsDataURL(this.form.foto)
     },
+    excluirProduto (idProduto) {
+      db.collection('produtos')
+        .doc(idProduto)
+        .delete()
+        
+    },
   },
   mounted () {
-    this.buscarProdutos()
+    console.log(this.produtos);
+    //this.buscarProdutos()
   },
+  
 };
 </script>
 <style>
