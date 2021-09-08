@@ -25,7 +25,23 @@
           :items="clientes"
           :items-per-page="5"
           class="elevation-1"
-        ></v-data-table>
+        >
+        <template v-slot:item.actions="{ item }">
+      <v-icon
+        small
+        class="mr-2"
+        @click="editarCliente(item)"
+      >
+        mdi-pencil
+      </v-icon>
+      <v-icon
+        small
+        @click="deleteItem(item)"
+      >
+        mdi-delete
+      </v-icon>
+    </template>
+        </v-data-table>
       </v-card-title>
     </v-card>
     <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
@@ -98,6 +114,7 @@ export default {
           },
           { text: 'Telefone', value: 'telefone' },
           { text: 'CPF', value: 'cpf' },
+          { text: 'Actions', value: 'actions', sortable: false },
         ],
       unsubscribe: null,
       snackbar: false,
@@ -117,8 +134,7 @@ export default {
       this.acaoCliente = 'Adicionar Cliente'
       this.dialog = true
     },
-    salvar () {
-      this.loading = true;
+    incluirNovoCliente () {
       var self = this
 
       db.collection("clientes").add({
@@ -135,6 +151,29 @@ export default {
         this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Cadastro não foi realizado mensagem técnica: ${error}`);
       })
     },
+    salvar () {
+      this.loading = true;
+      if(this.acaoCliente === 'Adicionar Cliente'){
+        this.incluirNovoCliente()
+        return
+      }
+
+      this.salvarClienteEditado()
+    },
+    salvarClienteEditado () {
+      const client = {
+        id: this.form.id,
+        nome: this.form.nome,
+        telefone: this.form.telefone,
+        cpf: this.form.cpf
+      }
+      db.collection('clientes')
+        .doc(this.form.id)
+        .set(client)
+        .then(() => {
+          console.log('client updated!')
+        })
+    },
     resetForm () {
       this.form = Object.assign({}, this.defaultForm)
       this.$refs.form.reset()
@@ -146,6 +185,14 @@ export default {
       this.mensagem = mensagem
       this.icon = icon
       this.color = color
+    },
+    editarCliente (cliente) {
+      this.acaoCliente = 'Editar Cliente'
+      this.form.id = cliente.id
+      this.form.nome = cliente.nome
+      this.form.telefone = cliente.telefone
+      this.form.cpf = cliente.cpf
+      this.dialog = true
     },
   },
   computed: {
