@@ -22,25 +22,27 @@
         <v-data-table
           :headers="headers"
           hide-default-header
+          :search="search"
+          sort-by="nome"
           :items="clientes"
           :items-per-page="5"
           class="elevation-1"
         >
-        <template v-slot:item.actions="{ item }">
-      <v-icon
-        small
-        class="mr-2"
-        @click="editarCliente(item)"
-      >
-        mdi-pencil
-      </v-icon>
-      <v-icon
-        small
-        @click="deleteItem(item)"
-      >
-        mdi-delete
-      </v-icon>
-    </template>
+          <template v-slot:item.actions="{ item }">
+            <v-icon
+              small
+              class="mr-2"
+              @click="editarCliente(item)"
+            >
+              mdi-pencil
+            </v-icon>
+            <v-icon
+              small
+              @click="deleteItem(item)"
+            >
+              mdi-delete
+            </v-icon>
+          </template>
         </v-data-table>
       </v-card-title>
     </v-card>
@@ -110,7 +112,6 @@ export default {
             text: 'Nome',
             align: 'start',
             value: 'nome',
-            filterable: true,
           },
           { text: 'Telefone', value: 'telefone' },
           { text: 'CPF', value: 'cpf' },
