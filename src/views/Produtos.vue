@@ -126,6 +126,9 @@ const db = firebase.firestore();
 
 export default {
   name: "produtos",
+  firestore: {
+    produtos: db.collection('produtos'),
+  },
   data() {
     const defaultForm = Object.freeze({
         foto: '',
@@ -167,9 +170,6 @@ export default {
       ],
       snackbar: false
     };
-  },
-  firestore: {
-    produtos: db.collection('produtos'),
   },
   computed: {
     formIsValid () {
@@ -228,7 +228,6 @@ export default {
           this.mostraSnackbar('success', 'mdi-checkbox-marked-circle', 'Cadastro realizado com sucesso');
           this.dialog = false
           this.resetForm()
-          this.buscarProdutos()
         })
         .catch((error) => {
           storage.ref(nomeFoto).delete()
