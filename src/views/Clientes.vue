@@ -41,12 +41,12 @@
                 <v-btn dark text @click="resetForm" type="button">
                   Cancelar
                 </v-btn>
-                <v-btn dark text type="submit" :disabled="!formIsValid">
+                <v-btn dark text type="submit" :disabled="!formIsValid || loading">
                   Salvar
                 </v-btn>
               </v-toolbar-items>
             </v-app-bar>
-            <v-container>
+            <v-container class="container-add-client">
               <v-row>
                 <v-col cols="12" md="6">
                   <v-text-field outlined v-model="form.nome" label="Nome" required></v-text-field>
@@ -106,22 +106,46 @@ export default {
       icon: '',
       dialog: false,
       form: Object.assign({}, defaultForm),
-      acaoCliente: ''
+      acaoCliente: '',
+      loading: false
     };
   },
   mounted () {
   },
   methods: {
     adicionarCliente () {
-
+      this.acaoCliente = 'Adicionar Cliente'
+      this.dialog = true
     },
-    salvar() {
+    salvar () {
+      this.loading = true;
+      var self = this
 
+      db.collection("clientes").add({
+        nome: self.form.nome,
+        telefone: self.form.telefone,
+        cpf: self.form.cpf
+      })
+      .then(() => {
+        this.mostraSnackbar('success', 'mdi-checkbox-marked-circle', 'Cadastro realizado com sucesso');
+        this.dialog = false
+        this.resetForm()
+      })
+      .catch((error) => {
+        this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Cadastro não foi realizado mensagem técnica: ${error}`);
+      })
     },
     resetForm () {
       this.form = Object.assign({}, this.defaultForm)
       this.$refs.form.reset()
       this.dialog = false
+    },
+    mostraSnackbar(color, icon, mensagem) {
+      this.snackbar = true
+      this.loading = false
+      this.mensagem = mensagem
+      this.icon = icon
+      this.color = color
     },
   },
   computed: {
@@ -138,5 +162,8 @@ export default {
 <style scoped>
 .clientes{
   margin-top: 30px;
+}
+.container-add-client{
+  margin-top: 48px;
 }
 </style>

@@ -59,7 +59,7 @@
                 <v-btn dark text @click="resetForm" type="button">
                   Cancelar
                 </v-btn>
-                <v-btn dark text type="submit" :disabled="!formIsValid">
+                <v-btn dark text type="submit" :disabled="!formIsValid || !loading">
                   Salvar
                 </v-btn>
               </v-toolbar-items>
@@ -168,7 +168,8 @@ export default {
         '9 a 12 meses',
         'acima de 12 meses'
       ],
-      snackbar: false
+      snackbar: false,
+      loading: false
     };
   },
   computed: {
