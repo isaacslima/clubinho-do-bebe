@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <v-container class="home">
     <v-list three-line>
       <template v-for="(item) in items">
         <v-list-item
@@ -19,7 +19,7 @@
         </v-list-item>
       </template>
     </v-list>
-  </div>
+  </v-container>
 </template>
 
 <script>
