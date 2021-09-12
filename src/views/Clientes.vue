@@ -7,7 +7,10 @@
     <v-spacer>
     </v-spacer>
     <v-col>
-      <v-btn @click="adicionarCliente()">Novo Cliente</v-btn>
+      <v-btn dark color="teal" @click="adicionarCliente()">
+        <v-icon dark left>
+          mdi-plus
+        </v-icon>Novo Cliente</v-btn>
     </v-col>
     </v-row>
         

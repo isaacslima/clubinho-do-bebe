@@ -1,6 +1,14 @@
 <template>
   <div class="about">
     <h1>Produtos</h1>
+    <v-row>
+      <v-spacer></v-spacer>
+      <v-btn dark color="teal" @click="adicionarProduto()">
+        <v-icon dark left>
+          mdi-plus
+        </v-icon>Novo Produto
+      </v-btn>
+    </v-row>
     <v-row cols="12" md="12" style="margin-top: 31px"  v-for="(produto, index) in produtos" :key="produto.id">
       <v-container>
         <v-card class="mx-auto card-products" color="blue lighten-4" outlined>
@@ -69,7 +77,7 @@
                 <v-btn dark text @click="resetForm" type="button">
                   Cancelar
                 </v-btn>
-                <v-btn dark text type="submit" :disabled="!formIsValid || !loading">
+                <v-btn dark text type="submit" :disabled="!formIsValid || loading">
                   Salvar
                 </v-btn>
               </v-toolbar-items>
@@ -123,9 +131,6 @@
       </v-icon>
       <span>{{ mensagem }}</span>
     </v-snackbar>
-    <v-btn color="pink" dark absolute bottom right fab @click="adicionarProduto()">
-      <v-icon>mdi-plus</v-icon>
-    </v-btn>
   </div>
 </template>
 <script>
