@@ -209,6 +209,10 @@ export default {
         .doc(cliente.id)
         .delete()
     },
+    lancarProduto(cliente) {
+      console.log(cliente)
+      this.$router.push({ path: 'aluguel' })
+    }
   },
   computed: {
     formIsValid () {

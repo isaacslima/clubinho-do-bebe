@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Clientes from '../views/Clientes.vue'
 import Produtos from '../views/Produtos.vue'
+import Aluguel from '../views/Aluguel.vue'
 import Login from '../views/Login.vue'
 
 Vue.use(VueRouter)
@@ -32,6 +33,12 @@ const routes = [
     path: '/produtos',
     name: 'Produtos',
     component: Produtos,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/aluguel',
+    name: 'Aluguel',
+    component: Aluguel,
     meta: { requiresAuth: true },
   },
   {
