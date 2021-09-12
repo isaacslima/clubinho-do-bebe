@@ -4,27 +4,37 @@
     <v-row cols="12" md="12" style="margin-top: 31px"  v-for="(produto, index) in produtos" :key="produto.id">
       <v-container>
         <v-card class="mx-auto card-products" color="blue lighten-4" outlined>
-          <v-chip class="info-mounth" dark color="#007E9E" dense x-small>{{ produto.faixaEtaria }}</v-chip> 
+          <v-row class="info-mounth">
+            <v-col>
+              <v-chip dark color="#007E9E" dense x-small>{{ produto.faixaEtaria }}</v-chip>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col>
+              <v-btn small color="indigo" dark @click="editarProduto(produto.id)">
+                <v-icon dark left>
+                  mdi-pencil
+                </v-icon>Editar
+              </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn small color="red" dark @click="excluirProduto(produto.id)">
+                <v-icon dark left>
+                  mdi-delete
+                </v-icon>Excluir
+              </v-btn>
+            </v-col>
+          </v-row>
           <v-list-item class="item-inside-card" three-line :key="index">
             <v-list-item-avatar tile size="80">
-              <v-img height="150" :src="produto.urlFoto"/>
+              <v-img height="100%" width="100%" src="../assets/toys.png"/>
             </v-list-item-avatar>                
             <v-list-item-content>
               <v-list-item-title color="#EB7A13" class="text-h5 mb-1">
                 <v-row>
-                  <v-col cols="8">
+                  <v-col cols="6">
                     {{ produto.nome }}
                   </v-col>
-                  <v-col cols="2">
-                    <v-btn small color="deep-purple lighten-2" outlined @click="editarProduto(produto.id)">
-                      Editar
-                    </v-btn>
-                  </v-col >
-                  <v-col cols="2">
-                    <v-btn small color="deep-purple lighten-2" outlined @click="excluirProduto(produto.id)">
-                      Excluir
-                    </v-btn>
-                  </v-col>
+                  
                 </v-row>
               </v-list-item-title>
               <v-list-item-subtitle>
