@@ -10,15 +10,7 @@
       <v-btn @click="adicionarCliente()">Novo Cliente</v-btn>
     </v-col>
     </v-row>
-    <v-card>
-      <v-card-title>
-        <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Pesquisar"
-        single-line
-        hide-details
-        ></v-text-field>
+        
         <v-data-table
           :headers="headers"
           hide-default-header
@@ -28,24 +20,41 @@
           :items-per-page="5"
           class="elevation-1"
         >
+        <template v-slot:top>
+        <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Pesquisar"
+        single-line
+        hide-details
+        ></v-text-field>
+      </template>
           <template v-slot:item.actions="{ item }">
-            <v-icon
-              small
-              class="mr-2"
-              @click="editarCliente(item)"
-            >
-              mdi-pencil
-            </v-icon>
-            <v-icon
-              small
-              @click="deleteItem(item)"
-            >
-              mdi-delete
-            </v-icon>
+            <v-row>
+              <v-col cols="4">
+                <v-btn @click="editarCliente(item)" color="indigo" dark small>
+                  <v-icon dark left>
+                    mdi-pencil
+                  </v-icon>Editar
+                </v-btn>
+              </v-col>
+              <v-col cols="4">
+                <v-btn small dark @click="lancarProduto(item)">
+                  <v-icon dark left >
+                    mdi-file-document-edit
+                  </v-icon>Aluguel
+                </v-btn>
+              </v-col>
+              <v-col cols="4">
+                <v-btn small dark color="red" @click="excluirCliente(item)">
+                  <v-icon dark left>
+                    mdi-delete
+                  </v-icon>Excluir
+                </v-btn>
+              </v-col>
+            </v-row>
           </template>
         </v-data-table>
-      </v-card-title>
-    </v-card>
     <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-card>
           <v-form ref="form" @submit.prevent="salvar">
@@ -194,6 +203,11 @@ export default {
       this.form.telefone = cliente.telefone
       this.form.cpf = cliente.cpf
       this.dialog = true
+    },
+    excluirCliente (cliente) {
+      db.collection('clientes')
+        .doc(cliente.id)
+        .delete()
     },
   },
   computed: {

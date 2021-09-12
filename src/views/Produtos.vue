@@ -303,12 +303,9 @@ export default {
       db.collection('produtos')
         .doc(idProduto)
         .delete()
-        
     },
   },
   mounted () {
-    console.log(this.produtos);
-    //this.buscarProdutos()
   },
   
 };
