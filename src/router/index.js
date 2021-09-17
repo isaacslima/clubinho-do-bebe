@@ -5,46 +5,61 @@ import Clientes from '../views/Clientes.vue'
 import Produtos from '../views/Produtos.vue'
 import Aluguel from '../views/Aluguel.vue'
 import Login from '../views/Login.vue'
+import Calendario from '../views/Calendario.vue'
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
+const routes = [{
     path: '*',
     redirect: '/login',
   },
   {
-    path: '/',
-    redirect: '/login',
+    path: '/', redirect: '/login',
   },
   {
     path: '/home',
     name: 'Home',
     component: Home,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true
+    },
   },
   {
     path: '/clientes',
     name: 'Clientes',
     component: Clientes,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true
+    },
   },
   {
     path: '/produtos',
     name: 'Produtos',
     component: Produtos,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true
+    },
   },
   {
     path: '/aluguel',
     name: 'Aluguel',
     component: Aluguel,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true
+    },
   },
   {
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/calendario',
+    name: 'Calendario',
+    component: Calendario,
+    meta: {
+      requiresAuth: true
+    }
   },
 ]
 
