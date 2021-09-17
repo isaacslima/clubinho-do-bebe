@@ -55,7 +55,7 @@ const routes = [{
   },
   {
     path: '/calendario',
-    name: 'Calendario',
+    name: 'Calendário',
     component: Calendario,
     meta: {
       requiresAuth: true
