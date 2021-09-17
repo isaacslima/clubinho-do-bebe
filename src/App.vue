@@ -18,11 +18,7 @@
               {{ $route.name }}
             </span>
           </v-col>
-          <v-col>
-
-          </v-col>
         </v-row>
-        
       </v-toolbar-title>
     </v-app-bar>
     <v-container>
