@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="produtos">
     <h1>Produtos</h1>
     <v-row>
       <v-spacer></v-spacer>
