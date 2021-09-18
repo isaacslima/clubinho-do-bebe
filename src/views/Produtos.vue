@@ -12,16 +12,22 @@
     <v-row cols="12" md="12" style="margin-top: 31px"  v-for="(produto, index) in produtos" :key="produto.id">
       <v-container>
         <v-card class="mx-auto card-products" color="blue lighten-4" outlined>
-          <v-row class="info-mounth">
+          <v-row class="info-mounth" dense>
             <v-col>
               <v-chip dark color="#007E9E" dense x-small>{{ produto.faixaEtaria }}</v-chip>
             </v-col>
-            <v-spacer></v-spacer>
             <v-col>
               <v-btn small color="indigo" dark @click="editarProduto(produto.id)">
                 <v-icon dark left>
                   mdi-pencil
                 </v-icon>Editar
+              </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn small dark @click="aluguelProduto(produto)">
+                <v-icon dark left >
+                  mdi-file-document-edit
+                </v-icon>Aluguel
               </v-btn>
             </v-col>
             <v-col>
@@ -319,6 +325,10 @@ export default {
         .doc(idProduto)
         .delete()
     },
+    aluguelProduto(produto){
+      console.log(produto)
+      this.$router.push({ path: 'aluguel' })
+    }
   },
   mounted () {
   },

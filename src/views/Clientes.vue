@@ -42,7 +42,7 @@
                 </v-btn>
               </v-col>
               <v-col cols="4">
-                <v-btn small dark @click="lancarProduto(item)">
+                <v-btn small dark @click="aluguelCliente(item)">
                   <v-icon dark left >
                     mdi-file-document-edit
                   </v-icon>Aluguel
@@ -212,7 +212,7 @@ export default {
         .doc(cliente.id)
         .delete()
     },
-    lancarProduto(cliente) {
+    aluguelCliente(cliente) {
       console.log(cliente)
       this.$router.push({ path: 'aluguel' })
     }
