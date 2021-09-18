@@ -3,95 +3,84 @@
     <v-row fixed>
       <v-col>
         <h1>Clientes</h1>
-    </v-col>
-    <v-spacer>
-    </v-spacer>
-    <v-col>
-      <v-btn dark color="teal" @click="adicionarCliente()">
-        <v-icon dark left>
-          mdi-plus
-        </v-icon>Novo Cliente</v-btn>
-    </v-col>
+      </v-col>
+      <v-spacer>
+      </v-spacer>
+      <v-col>
+        <v-btn dark color="teal" @click="adicionarCliente()">
+          <v-icon dark left>
+            mdi-plus
+          </v-icon>
+          Novo Cliente
+        </v-btn>
+      </v-col>
     </v-row>
-        
-        <v-data-table
-          :headers="headers"
-          hide-default-header
-          :search="search"
-          sort-by="nome"
-          :items="clientes"
-          :items-per-page="5"
-          class="elevation-1"
-        >
-        <template v-slot:top>
-        <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Pesquisar"
-        single-line
-        hide-details
-        ></v-text-field>
+    <v-data-table :headers="headers" hide-default-header :search="search" sort-by="nome" :items="clientes"
+      :items-per-page="5" class="elevation-1">
+      <template v-slot:top>
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        </v-text-field>
       </template>
-          <template v-slot:item.actions="{ item }">
+      <template v-slot:item.actions="{ item }">
+        <v-row>
+          <v-col cols="4">
+            <v-btn @click="editarCliente(item)" color="indigo" dark small>
+              <v-icon dark left>
+                mdi-pencil
+              </v-icon>Editar
+            </v-btn>
+          </v-col>
+          <v-col cols="4">
+            <v-btn small dark @click="aluguelCliente(item)">
+              <v-icon dark left >
+                mdi-file-document-edit
+              </v-icon>Aluguel
+            </v-btn>
+          </v-col>
+          <v-col cols="4">
+            <v-btn small dark color="red" @click="excluirCliente(item)">
+              <v-icon dark left>
+                mdi-delete
+              </v-icon>Excluir
+            </v-btn>
+          </v-col>
+        </v-row>
+      </template>
+    </v-data-table>
+    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+      <v-card>
+        <v-form ref="form" @submit.prevent="salvar">
+          <v-app-bar dark fixed color="primary" dense elevate-on-scroll>
+            <v-btn icon dark @click="resetForm">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-toolbar-title>{{ acaoCliente }}</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+              <v-btn dark text @click="resetForm" type="button">
+                Cancelar
+              </v-btn>
+              <v-btn dark text type="submit" :disabled="!formIsValid || loading">
+                Salvar
+              </v-btn>
+            </v-toolbar-items>
+          </v-app-bar>
+          <v-container class="container-add-client">
             <v-row>
-              <v-col cols="4">
-                <v-btn @click="editarCliente(item)" color="indigo" dark small>
-                  <v-icon dark left>
-                    mdi-pencil
-                  </v-icon>Editar
-                </v-btn>
+              <v-col cols="12" md="6">
+                <v-text-field outlined v-model="form.nome" label="Nome" required></v-text-field>
               </v-col>
-              <v-col cols="4">
-                <v-btn small dark @click="aluguelCliente(item)">
-                  <v-icon dark left >
-                    mdi-file-document-edit
-                  </v-icon>Aluguel
-                </v-btn>
+              <v-col cols="12" md="6">
+                <v-text-field outlined v-model="form.telefone" label="Telefone" required></v-text-field>
               </v-col>
-              <v-col cols="4">
-                <v-btn small dark color="red" @click="excluirCliente(item)">
-                  <v-icon dark left>
-                    mdi-delete
-                  </v-icon>Excluir
-                </v-btn>
+              <v-col cols="12" md="6">
+                <v-text-field outlined v-model="form.cpf" label="CPF" required></v-text-field>
               </v-col>
             </v-row>
-          </template>
-        </v-data-table>
-    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
-        <v-card>
-          <v-form ref="form" @submit.prevent="salvar">
-            <v-app-bar dark fixed color="primary" dense elevate-on-scroll>
-              <v-btn icon dark @click="resetForm">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-              <v-toolbar-title>{{ acaoCliente }}</v-toolbar-title>
-              <v-spacer></v-spacer>
-              <v-toolbar-items>
-                <v-btn dark text @click="resetForm" type="button">
-                  Cancelar
-                </v-btn>
-                <v-btn dark text type="submit" :disabled="!formIsValid || loading">
-                  Salvar
-                </v-btn>
-              </v-toolbar-items>
-            </v-app-bar>
-            <v-container class="container-add-client">
-              <v-row>
-                <v-col cols="12" md="6">
-                  <v-text-field outlined v-model="form.nome" label="Nome" required></v-text-field>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field outlined v-model="form.telefone" label="Telefone" required></v-text-field>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field outlined v-model="form.cpf" label="CPF" required></v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-form>
-        </v-card>
-      </v-dialog>
+          </v-container>
+        </v-form>
+      </v-card>
+    </v-dialog>
     <v-snackbar v-model="snackbar" :color="color">
       <v-icon dark>
         {{ icon }}
