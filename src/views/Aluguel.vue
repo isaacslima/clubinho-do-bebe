@@ -43,7 +43,7 @@
                     </b>
                 </v-row>                
                 <v-row>
-                    Data Aluguel: <b>{{ new Date(aluguel.dataInicio.seconds*1000).toLocaleDateString('pt-BR') }}</b>
+                    Data Aluguel: <b> {{ new Date(aluguel.dataInicio.seconds*1000).toLocaleDateString('pt-BR') }}</b>
                 </v-row>
                 <v-row>
                     Data Vencimento: {{ new Date(aluguel.dataFim.seconds*1000).toLocaleDateString('pt-BR') }}
@@ -51,7 +51,7 @@
                 
                 <v-row>
                     Cliente: {{ aluguel.nomeCliente }} 
-                    <v-icon>
+                    <v-icon @click="enviarMensagem(aluguel)">
                         mdi-whatsapp
                     </v-icon>
                 </v-row>
@@ -111,6 +111,11 @@ export default {
         .doc(idAluguel)
         .delete()
     },
+    enviarMensagem (aluguel) {
+        let dataInicio = new Date(aluguel.dataInicio.seconds*1000).toLocaleString('pt-BR')
+        let mensagem = `https://wa.me/55${aluguel.telefone}/?text=Obrigado por alugar ${aluguel.nomeProduto} data do aluguel foi ${dataInicio}`
+        window.open(mensagem, '_blank')
+    }
   },
 };
 </script>
