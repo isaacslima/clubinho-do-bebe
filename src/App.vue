@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar class="top-bar" fixed color="white" dense elevate-on-scroll>
+    <v-app-bar class="top-bar" fixed color="white" dense elevate-on-scroll v-if="$route.name !== 'Login'">
       <v-toolbar-title color="cyan">
         <v-row>
          <v-col v-if="$route.name !== 'Home'">
