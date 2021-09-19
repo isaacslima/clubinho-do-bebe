@@ -231,8 +231,7 @@ export default {
         this.buscarFotoEdicao(this.form.foto)
       })
     },
-    salvar () {
-      this.loading = true;
+    incluirNovoProduto () {
       var self = this
       const storage = firebase.storage().ref();
       var nomeFoto = `${utils.newGuid()}.png`
@@ -259,6 +258,44 @@ export default {
       .catch((error) => {
         this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível enviar a foto mensagem técnica: ${error}`);
       });
+    },
+    salvarProdutoEditado () {
+      const produto = {
+        id: this.form.id,
+        nome: this.form.nome,
+        foto: this.form.nomeFoto,
+        descricao: this.form.descricao,
+        faixaEtaria: this.form.faixaEtaria,
+        precos: this.form.precos
+      }
+      const storage = firebase.storage().ref();
+
+      storage.child(`produtos/${this.form.nomeFoto}.png`)
+      .put(this.form.foto)
+      .then(
+        db.collection('produtos')
+        .doc(this.form.id)
+        .set(produto)
+        .then(()=> {
+          this.mostraSnackbar('success', 'mdi-checkbox-marked-circle', 'Cadastro Atualizado com sucesso');
+          this.dialog = false
+          this.resetForm()
+        })
+        .catch((error) => {
+          this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível atualizer o produto mensagem técnica: ${error}`);
+        })
+      )
+      .catch((error) => {
+        this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível atualizar a foto mensagem técnica: ${error}`);
+      })
+    },
+    salvar () {
+      this.loading = true;
+      if(this.acaoProduto === 'Adicionar Produto') {
+        this.incluirNovoProduto()
+        return
+      }
+      this.salvarProdutoEditado()
     },
     mostraSnackbar(color, icon, mensagem) {
       this.snackbar = true
