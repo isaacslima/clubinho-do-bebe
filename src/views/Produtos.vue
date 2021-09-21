@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="produtos">
     <h1>Produtos</h1>
     <v-row>
       <v-spacer></v-spacer>
@@ -12,16 +12,22 @@
     <v-row cols="12" md="12" style="margin-top: 31px"  v-for="(produto, index) in produtos" :key="produto.id">
       <v-container>
         <v-card class="mx-auto card-products" color="blue lighten-4" outlined>
-          <v-row class="info-mounth">
+          <v-row class="info-mounth" dense>
             <v-col>
               <v-chip dark color="#007E9E" dense x-small>{{ produto.faixaEtaria }}</v-chip>
             </v-col>
-            <v-spacer></v-spacer>
             <v-col>
               <v-btn small color="indigo" dark @click="editarProduto(produto.id)">
                 <v-icon dark left>
                   mdi-pencil
                 </v-icon>Editar
+              </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn small dark @click="aluguelProduto(produto)">
+                <v-icon dark left >
+                  mdi-file-document-edit
+                </v-icon>Aluguel
               </v-btn>
             </v-col>
             <v-col>
@@ -225,8 +231,7 @@ export default {
         this.buscarFotoEdicao(this.form.foto)
       })
     },
-    salvar () {
-      this.loading = true;
+    incluirNovoProduto () {
       var self = this
       const storage = firebase.storage().ref();
       var nomeFoto = `${utils.newGuid()}.png`
@@ -253,6 +258,44 @@ export default {
       .catch((error) => {
         this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível enviar a foto mensagem técnica: ${error}`);
       });
+    },
+    salvarProdutoEditado () {
+      const produto = {
+        id: this.form.id,
+        nome: this.form.nome,
+        foto: this.form.nomeFoto,
+        descricao: this.form.descricao,
+        faixaEtaria: this.form.faixaEtaria,
+        precos: this.form.precos
+      }
+      const storage = firebase.storage().ref();
+
+      storage.child(`produtos/${this.form.nomeFoto}.png`)
+      .put(this.form.foto)
+      .then(
+        db.collection('produtos')
+        .doc(this.form.id)
+        .set(produto)
+        .then(()=> {
+          this.mostraSnackbar('success', 'mdi-checkbox-marked-circle', 'Cadastro Atualizado com sucesso');
+          this.dialog = false
+          this.resetForm()
+        })
+        .catch((error) => {
+          this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível atualizer o produto mensagem técnica: ${error}`);
+        })
+      )
+      .catch((error) => {
+        this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível atualizar a foto mensagem técnica: ${error}`);
+      })
+    },
+    salvar () {
+      this.loading = true;
+      if(this.acaoProduto === 'Adicionar Produto') {
+        this.incluirNovoProduto()
+        return
+      }
+      this.salvarProdutoEditado()
     },
     mostraSnackbar(color, icon, mensagem) {
       this.snackbar = true
@@ -319,6 +362,10 @@ export default {
         .doc(idProduto)
         .delete()
     },
+    aluguelProduto(produto){
+      console.log(produto)
+      this.$router.push({ path: 'aluguel' })
+    }
   },
   mounted () {
   },
