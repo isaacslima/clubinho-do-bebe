@@ -26,7 +26,7 @@ const routes = [{
   },
   {
     path: '/clientes',
-    name: 'Clientes',
+    name: 'Cliente',
     component: Clientes,
     meta: {
       requiresAuth: true
@@ -34,7 +34,7 @@ const routes = [{
   },
   {
     path: '/produtos',
-    name: 'Produtos',
+    name: 'Produto',
     component: Produtos,
     meta: {
       requiresAuth: true
