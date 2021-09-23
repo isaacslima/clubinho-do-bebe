@@ -56,12 +56,79 @@
                     </v-icon>
                 </v-row>
                 </v-container>
-                
             </v-list-item-content>
           </v-list-item>
         </v-card>
       </v-container>
     </v-row>
+    <v-row>
+      <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+        <v-card>
+          <v-form ref="form" @submit.prevent="salvar">
+            <v-app-bar dark fixed color="primary" dense elevate-on-scroll>
+              <v-btn icon dark @click="resetForm">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+              <v-toolbar-title>{{ acaoProduto }}</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-toolbar-items>
+                <v-btn dark text @click="resetForm" type="button">
+                  Cancelar
+                </v-btn>
+                <v-btn dark text type="submit" :disabled="!formIsValid || loading">
+                  Salvar
+                </v-btn>
+              </v-toolbar-items>
+            </v-app-bar>
+            <v-container class="container-add-edit">
+              <v-row cols="12">
+                <v-file-input 
+                  :value="form.foto" 
+                  v-model="form.foto" 
+                  accept="image/*" 
+                  label="Foto"
+                  @change="onFilePicked"
+                >
+                </v-file-input>
+              </v-row>
+              <v-row cols="12">
+                <v-img :src="imageUrl" height="150" width="150"/>
+              </v-row>
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-text-field outlined v-model="form.nome" label="Nome" required></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-select outlined v-model="form.faixaEtaria" :items="faixasEtarias" label="Faixa Etária"
+                     required></v-select>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-textarea outlined v-model="form.descricao" label="Descrição" required>
+                  </v-textarea>
+                </v-col>
+              </v-row>
+              <v-row v-for="(preco, index) in form.precos" :key="preco.id">
+                {{ index }}
+                <v-col cols="12" md="4">
+                  <v-text-field outlined v-model="preco.preco" type="number" label="Valor" required></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field outlined v-model="preco.dias" type="number" label="Dias" required></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <v-snackbar v-model="snackbar" :color="color">
+      <v-icon dark>
+        {{ icon }}
+      </v-icon>
+      <span>{{ mensagem }}</span>
+    </v-snackbar>
   </div>
 </template>
 <script>
@@ -83,11 +150,18 @@ export default {
       acaoAluguel: '',
       alugueis: [],
       form: Object.assign({}, defaultForm),
-      dialog: false
+      dialog: false,
+      defaultForm,
+      color: '',
+      icon: '',
+      mensagem: '',
     };
   },
   methods: {
     resetForm () {
+      this.form = Object.assign({}, this.defaultForm)
+      this.$refs.form.reset()
+      this.dialog = false
     },
     adicionarAluguel () {
       this.acaoAluguel = 'Adicionar Aluguel'
@@ -97,7 +171,7 @@ export default {
       this.acaoProduto = 'Editar Aluguel'
       this.form.id = idAluguel
       this.dialog = true;
-      db.collection('produtos')
+      db.collection('aluguel')
       .doc(idAluguel)
       .get()
       .then(snapshot => {
