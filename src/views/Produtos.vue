@@ -1,14 +1,6 @@
 <template>
   <div class="produtos">
     <h1>Produtos</h1>
-    <v-row>
-      <v-spacer></v-spacer>
-      <v-btn dark color="teal" @click="adicionarProduto()">
-        <v-icon dark left>
-          mdi-plus
-        </v-icon>Novo Produto
-      </v-btn>
-    </v-row>
     <v-row cols="12" md="12" style="margin-top: 31px"  v-for="(produto, index) in produtos" :key="produto.id">
       <v-container>
         <v-card class="mx-auto card-products" color="blue lighten-4" outlined>
@@ -206,6 +198,9 @@ export default {
       )
     },
   },
+  created() {
+    this.$root.$refs.Children = this;
+  },
   methods: {
     resetForm () {
       this.form = Object.assign({}, this.defaultForm)
@@ -213,7 +208,7 @@ export default {
       this.dialog = false
       this.imageUrl = ''
     },
-    adicionarProduto () {
+    adicionarItem () {
       this.acaoProduto = 'Adicionar Produto'
       this.dialog = true;
     },

@@ -1,14 +1,6 @@
 <template>
   <div class="aluguel">
     <h1>Produtos</h1>
-    <v-row>
-      <v-spacer></v-spacer>
-      <v-btn color="teal" disabled @click="adicionarAluguel()">
-        <v-icon dark left>
-          mdi-plus
-        </v-icon>Novo Aluguel
-      </v-btn>
-    </v-row>
     <v-row cols="12" md="12" style="margin-top: 31px"  v-for="(aluguel, index) in alugueis" :key="aluguel.id">
       <v-container>
         <v-card class="mx-auto card-products" color="blue lighten-4" outlined>
@@ -157,13 +149,16 @@ export default {
       mensagem: '',
     };
   },
+  created() {
+    this.$root.$refs.Children = this;
+  },
   methods: {
     resetForm () {
       this.form = Object.assign({}, this.defaultForm)
       this.$refs.form.reset()
       this.dialog = false
     },
-    adicionarAluguel () {
+    adicionarItem () {
       this.acaoAluguel = 'Adicionar Aluguel'
       this.dialog = true;
     },

@@ -1,20 +1,5 @@
 <template>
   <v-container class="clientes">
-    <v-row fixed>
-      <v-col>
-        <h1>Clientes</h1>
-      </v-col>
-      <v-spacer>
-      </v-spacer>
-      <v-col>
-        <v-btn dark color="teal" @click="adicionarCliente()">
-          <v-icon dark left>
-            mdi-plus
-          </v-icon>
-          Novo Cliente
-        </v-btn>
-      </v-col>
-    </v-row>
     <v-data-table :headers="headers" hide-default-header :search="search" sort-by="nome" :items="clientes"
       :items-per-page="5" class="elevation-1">
       <template v-slot:top>
@@ -129,10 +114,11 @@ export default {
       loading: false
     };
   },
-  mounted () {
+  created() {
+    this.$root.$refs.Children = this;
   },
   methods: {
-    adicionarCliente () {
+    adicionarItem () {
       this.acaoCliente = 'Adicionar Cliente'
       this.dialog = true
     },
