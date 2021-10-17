@@ -88,11 +88,14 @@
                   accept="image/*" 
                   label="Foto"
                   @change="onFilePicked"
+                  :disabled="acaoProduto !== 'Adicionar Produto'"
                 >
                 </v-file-input>
               </v-row>
               <v-row cols="12">
-                <v-img :src="imageUrl" height="150" width="150"/>
+                <div class="image-produto">
+                  <v-img :src="imageUrl" />
+                </div>
               </v-row>
               <v-row>
                 <v-col cols="12" md="6">

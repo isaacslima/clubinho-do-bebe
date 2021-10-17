@@ -48,7 +48,6 @@
                     </v-icon>
                 </v-row>
                 </v-container>
-                
             </v-list-item-content>
           </v-list-item>
         </v-card>
@@ -228,6 +227,9 @@ export default {
       return 'teste';
     },
     resetForm () {
+      this.form = Object.assign({}, this.defaultForm)
+      this.$refs.form.reset()
+      this.dialog = false
     },
     adicionarItem () {
       this.acaoAluguel = 'Adicionar Aluguel'
@@ -237,7 +239,7 @@ export default {
       this.acaoProduto = 'Editar Aluguel'
       this.form.id = idAluguel
       this.dialog = true;
-      db.collection('produtos')
+      db.collection('aluguel')
       .doc(idAluguel)
       .get()
       .then(snapshot => {
