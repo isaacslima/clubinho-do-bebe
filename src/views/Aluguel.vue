@@ -117,6 +117,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
+                        locale="pt-BR"
                         outlined
                         v-model="form.dataAluguel"
                         label="Data Aluguel"
@@ -128,6 +129,7 @@
                     </template>
                     <v-date-picker
                       v-model="form.dataAluguel"
+                      locale="pt-BR"
                       @input="menu = false"
                     ></v-date-picker>
                   </v-menu>
@@ -141,6 +143,7 @@
                       item-value="item"
                       required
                       :disabled="form.produto === ''"
+                      @change="atualizarDataDevolucao()"
                       >
                     <template v-slot:selection="data">
                       {{ data.item.dias }} dias R$ {{ data.item.preco}}
@@ -153,12 +156,17 @@
                 <v-col cols="6" md="2">
                   <v-text-field outlined v-model="form.desconto" type="number" label="Desconto" required></v-text-field>
                 </v-col>
+              </v-row>
+              <v-row>
                 <v-col cols="12">
-                  {{ form.precoDia || json }}
                   Total R$ {{ form.precoDia.preco - form.desconto }}
                 </v-col>
               </v-row>
-
+              <v-row>
+                <v-col cols="12">
+                  Data devolução {{ dataDevolucao }}
+                </v-col>
+              </v-row>
             </v-container>
           </v-form>
         </v-card>
@@ -189,7 +197,6 @@ export default {
         produto: '',
         cliente: '',
         dataAluguel: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-        dataDevolucao: '',
         precoDia: {
           dias: 10,
           preco: 0
@@ -198,6 +205,7 @@ export default {
     })
     return {
       acaoAluguel: '',
+      dataDevolucao: '',
       alugueis: [],
       form: Object.assign({}, defaultForm),
       dialog: false,
@@ -214,17 +222,19 @@ export default {
   computed: {
     formIsValid () {
       return (
-        this.form.idProduto &&
-        this.form.idCliente &&
+        this.form.produto &&
+        this.form.cliente &&
         this.form.dataAluguel &&
         this.form.dataDevolucao
       )
     },
   },
   methods: {
-    retornaStringCliente (cliente) {
-      console.log(cliente);
-      return 'teste';
+    atualizarDataDevolucao () {
+      const [ ano, mes, dia ] = this.form.dataAluguel.split('-');
+      var data = new Date(ano, mes-1, dia);
+      var dataDevolucao = new Date(data.getDate() + parseInt(this.form.precoDia.dias)* 60000);
+      console.log(dataDevolucao)
     },
     resetForm () {
       this.form = Object.assign({}, this.defaultForm)
