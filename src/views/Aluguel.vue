@@ -31,18 +31,18 @@
                 <v-container>
                     <v-row>
                         <b>
-                    {{ aluguel.nomeProduto }}
+                    {{ aluguel.produto.descricao }}
                     </b>
                 </v-row>                
                 <v-row>
-                    Data Aluguel: <b> {{ new Date(aluguel.dataInicio.seconds*1000).toLocaleDateString('pt-BR') }}</b>
+                    Data Aluguel: <b> {{ new Date(aluguel.dataAluguel.seconds*1000).toLocaleDateString('pt-BR') }}</b>
                 </v-row>
                 <v-row>
-                    Data Vencimento: {{ new Date(aluguel.dataFim.seconds*1000).toLocaleDateString('pt-BR') }}
+                    Data Vencimento: {{ new Date(aluguel.dataDevolucao.seconds*1000).toLocaleDateString('pt-BR') }}
                 </v-row>
                 
                 <v-row>
-                    Cliente: {{ aluguel.nomeCliente }} 
+                    Cliente: {{ aluguel.cliente.nome }} 
                     <v-icon @click="enviarMensagem(aluguel)">
                         mdi-whatsapp
                     </v-icon>
@@ -72,6 +72,7 @@
                 </v-btn>
               </v-toolbar-items>
             </v-app-bar>
+            
             <v-container class="container-add-edit">
               <v-row>
                 <v-col cols="12" md="6">
@@ -159,12 +160,17 @@
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  Total R$ {{ form.precoDia.preco - form.desconto }}
+                  Total R$ {{ form.precoDia.preco - form.desconto }} Data devolução {{ form.dataDevolucao | formatDate }}
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  Data devolução {{ dataDevolucao }}
+                  
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+
                 </v-col>
               </v-row>
             </v-container>
@@ -183,8 +189,14 @@
 <script>
 import firebase from "../firebase/index";
 import 'firebase/storage';
+import Vue from 'vue'
 const db = firebase.firestore();
 
+Vue.filter('formatDate', function(value) {
+  if(value){
+    return value.toLocaleDateString('pt-BR');
+  }
+})
 export default {
   name: "aluguel",
   firestore: {
@@ -201,11 +213,11 @@ export default {
           dias: 10,
           preco: 0
         },
-        desconto: 0
+        desconto: 0,
+        dataDevolucao: ''
     })
     return {
       acaoAluguel: '',
-      dataDevolucao: '',
       alugueis: [],
       form: Object.assign({}, defaultForm),
       dialog: false,
@@ -213,7 +225,8 @@ export default {
       mensagem: '',
       icon: '',
       color: '',
-      menu: false
+      menu: false,
+      loading: false
     };
   },
   created() {
@@ -230,20 +243,64 @@ export default {
     },
   },
   methods: {
+    retornaDataAluguel(dataString) {
+      const [ ano, mes, dia ] = dataString.split('-');
+      return new Date(ano, mes-1, dia);
+    },
     atualizarDataDevolucao () {
-      const [ ano, mes, dia ] = this.form.dataAluguel.split('-');
-      var data = new Date(ano, mes-1, dia);
-      var dataDevolucao = new Date(data.getDate() + parseInt(this.form.precoDia.dias)* 60000);
-      console.log(dataDevolucao)
+      var data = this.retornaDataAluguel(this.form.dataAluguel)
+      this.form.dataDevolucao = this.adicionarDias(data, this.form.precoDia.dias)
+    },
+    adicionarDias (date, days) {
+      var result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
     },
     resetForm () {
       this.form = Object.assign({}, this.defaultForm)
       this.$refs.form.reset()
       this.dialog = false
     },
+    mostraSnackbar(color, icon, mensagem) {
+      this.snackbar = true
+      this.loading = false
+      this.mensagem = mensagem
+      this.icon = icon
+      this.color = color
+    },
     adicionarItem () {
       this.acaoAluguel = 'Adicionar Aluguel'
       this.dialog = true;
+    },
+    salvar () {
+      this.loading = true
+      if(this.acaoAluguel === 'Adicionar Aluguel') {
+        this.incluirNovoAluguel()
+        return
+      }
+      this.salvarAluguelEditado()
+    },
+    salvarAluguelEditado () {
+
+    },
+    incluirNovoAluguel () {
+      var self = this
+      db.collection("aluguel").add({
+        produto: self.form.produto,
+        cliente: self.form.cliente,
+        dataAluguel: this.retornaDataAluguel(self.form.dataAluguel),
+        dataDevolucao: self.form.dataDevolucao,
+        desconto: self.form.desconto ?? 0,
+        precoDia: self.form.precoDia
+      })
+      .then(() => {
+        this.mostraSnackbar('success', 'mdi-checkbox-marked-circle', 'Cadastro realizado com sucesso');
+        this.dialog = false
+        this.resetForm()
+      })
+      .catch((error) => {
+        this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Cadastro não foi realizado mensagem técnica: ${error}`);
+      })
     },
     editarAluguel (idAluguel) {
       this.acaoProduto = 'Editar Aluguel'
