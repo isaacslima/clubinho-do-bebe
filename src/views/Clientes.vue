@@ -196,8 +196,7 @@ export default {
     formIsValid () {
       return (
         this.form.nome &&
-        this.form.telefone &&
-        this.form.cpf
+        this.form.telefone
       )
     },
   },
