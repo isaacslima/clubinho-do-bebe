@@ -16,7 +16,7 @@
               </v-btn>
             </v-col>
             <v-col>
-              <v-btn small color="red" disabled @click="excluirAluguel(aluguel.id)">
+              <v-btn small color="red" dark @click="excluirAluguel(aluguel.id)">
                 <v-icon dark left>
                   mdi-delete
                 </v-icon>Excluir
@@ -95,6 +95,7 @@
                     label="Produto"
                     item-value="item"
                     required
+                    @change="preenchePrecos()"
                   >
                   <template v-slot:selection="data">
                     {{ data.item.descricao }}
@@ -139,7 +140,7 @@
                   <v-select 
                       outlined 
                       v-model="form.precoDia" 
-                      :items="form.produto.precos" 
+                      :items="precos" 
                       label="Dias e Preço"
                       item-value="item"
                       required
@@ -147,10 +148,10 @@
                       @change="atualizarDataDevolucao()"
                       >
                     <template v-slot:selection="data">
-                      {{ data.item.dias }} dias R$ {{ data.item.preco}}
+                      {{ data.item.dias }} dias R$ {{ data.item.preco }}
                     </template>
-                    <template v-slot:item="data">
-                      {{ data.item.dias }} dias R$ {{ data.item.preco}}
+                    <template v-slot:item="data" >
+                      {{ data.item.dias }} dias R$ {{ data.item.preco }}
                     </template>
                   </v-select>
                 </v-col>
@@ -160,17 +161,7 @@
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  Total R$ {{ form.precoDia.preco - form.desconto }} Data devolução {{ form.dataDevolucao | formatDate }}
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12">
-                  
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
-
+                  Total R$ {{ valorTotal }} Data devolução {{ form.dataDevolucao | formatDate }}
                 </v-col>
               </v-row>
             </v-container>
@@ -226,7 +217,9 @@ export default {
       icon: '',
       color: '',
       menu: false,
-      loading: false
+      loading: false,
+      valorTotal: 0,
+      precos: []
     };
   },
   created() {
@@ -243,11 +236,15 @@ export default {
     },
   },
   methods: {
+    preenchePrecos () {
+      this.precos = this.form.produto.precos;
+    },
     retornaDataAluguel(dataString) {
       const [ ano, mes, dia ] = dataString.split('-');
       return new Date(ano, mes-1, dia);
     },
     atualizarDataDevolucao () {
+      this.valorTotal = this.form.precoDia.preco - this.form.desconto;
       var data = this.retornaDataAluguel(this.form.dataAluguel)
       this.form.dataDevolucao = this.adicionarDias(data, this.form.precoDia.dias)
     },
@@ -270,6 +267,7 @@ export default {
     },
     adicionarItem () {
       this.acaoAluguel = 'Adicionar Aluguel'
+      this.form.dataAluguel = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
       this.dialog = true;
     },
     salvar () {
