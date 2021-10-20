@@ -94,14 +94,17 @@
               </v-row>
               <v-row cols="12">
                 <div class="image-produto">
-                  <v-img :src="imageUrl" />
+                  <v-img :src="imageUrl" contain height="300" aspect-ratio="1.7" />
                 </div>
               </v-row>
               <v-row>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
                   <v-text-field outlined v-model="form.nome" label="Nome" required></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
+                  <v-text-field outlined v-model="form.codigo" label="Codigo" required></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
                   <v-select outlined v-model="form.faixaEtaria" :items="faixasEtarias" label="Faixa Etária"
                      required></v-select>
                 </v-col>
@@ -112,13 +115,12 @@
                   </v-textarea>
                 </v-col>
               </v-row>
-              <v-row v-for="(preco, index) in form.precos" :key="preco.id">
-                {{ index }}
-                <v-col cols="12" md="4">
-                  <v-text-field outlined v-model="preco.preco" type="number" label="Valor" required></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
+              <v-row v-for="(preco) in form.precos" :key="preco.id">
+                <v-col cols="6" md="4">
                   <v-text-field outlined v-model="preco.dias" type="number" label="Dias" required></v-text-field>
+                </v-col>
+                <v-col cols="6" md="4">
+                  <v-text-field outlined v-model="preco.preco" type="number" label="Valor" required></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -149,6 +151,7 @@ export default {
     const defaultForm = Object.freeze({
         foto: '',
         nome: '',
+        codigo: '',
         descricao: '',
         faixaEtaria: '',
         precos: [
@@ -174,6 +177,7 @@ export default {
       unsubscribe: null,
       dialog: false,
       defaultForm,
+      foto: '',
       color: '',
       icon: '',
       mensagem: '',
@@ -192,6 +196,7 @@ export default {
     formIsValid () {
       return (
         this.form.nome &&
+        this.form.codigo &&
         this.form.descricao &&
         this.form.faixaEtaria &&
         this.form.precos
@@ -221,7 +226,9 @@ export default {
       .get()
       .then(snapshot => {
         const document = snapshot.data()
+        console.log(document);
         this.form.nome = document.nome
+        this.form.codigo = document?.codigo
         this.form.faixaEtaria = document.faixaEtaria
         this.form.descricao = document.descricao
         this.form.precos = document.precos
@@ -238,6 +245,7 @@ export default {
       .then(
         db.collection("produtos").add({
           nome: self.form.nome,
+          codigo: self.form.codigo,
           foto: nomeFoto,
           descricao: self.form.descricao,
           faixaEtaria: self.form.faixaEtaria,
@@ -261,17 +269,13 @@ export default {
       const produto = {
         id: this.form.id,
         nome: this.form.nome,
-        foto: this.form.nomeFoto,
+        codigo: this.form.codigo,
+        foto: this.form.foto,
         descricao: this.form.descricao,
         faixaEtaria: this.form.faixaEtaria,
         precos: this.form.precos
       }
-      const storage = firebase.storage().ref();
-
-      storage.child(`produtos/${this.form.nomeFoto}.png`)
-      .put(this.form.foto)
-      .then(
-        db.collection('produtos')
+      db.collection('produtos')
         .doc(this.form.id)
         .set(produto)
         .then(()=> {
@@ -281,10 +285,6 @@ export default {
         })
         .catch((error) => {
           this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível atualizer o produto mensagem técnica: ${error}`);
-        })
-      )
-      .catch((error) => {
-        this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível atualizar a foto mensagem técnica: ${error}`);
       })
     },
     salvar () {
@@ -395,5 +395,8 @@ export default {
 }
 .container-add-edit{
   margin-top: 48px;
+}
+.image-produto{
+
 }
 </style>
