@@ -23,7 +23,7 @@
               </v-btn>
             </v-col>
             <v-col>
-              <v-btn small color="red" dark @click="excluirProduto(produto.id)">
+              <v-btn small color="red" dark @click="confirmarExcluirProduto(produto)">
                 <v-icon dark left>
                   mdi-delete
                 </v-icon>Excluir
@@ -46,18 +46,22 @@
               <v-list-item-subtitle>
                 {{ produto.descricao }}
               </v-list-item-subtitle>
-              <v-container fluid>
-                <v-row >
-                  <v-col v-for="(preco) in produto.precos" :key="preco.id" cols="4" >
-                    <div class="label-price">
-                      <v-icon dark>mdi-calendar</v-icon>
-                      {{ preco.dias }} R$ {{ preco.preco }}
-                    </div>
-                  </v-col>
-                </v-row>  
-              </v-container>
+              
+              
             </v-list-item-content>
           </v-list-item>
+          <v-card-actions>
+                <v-container fluid>
+                    <v-row >
+                      <v-col v-for="(preco) in produto.precos" :key="preco.id" cols="4" >
+                        <div class="label-price">
+                          <v-icon dark>mdi-calendar</v-icon> {{ preco.dias }} <br>
+                          R$ {{ preco.preco }}
+                        </div>
+                      </v-col>
+                    </v-row>  
+                  </v-container>
+              </v-card-actions>
         </v-card>
       </v-container>
     </v-row>
@@ -127,6 +131,33 @@
           </v-form>
         </v-card>
       </v-dialog>
+      <v-dialog
+        v-model="confirmarExcluir"
+        width="500"
+      >
+        <v-card>
+          <v-card-title class="font-weight-regular">
+            Deseja realmente excluir <br><span class="font-weight-bold">{{ produtoExcluir.nome }}</span>
+          </v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="#EB7A13"
+              outlined
+              @click="excluirProduto()"
+            >
+              Excluir
+            </v-btn>
+            <v-btn
+              color="#EB7A13"
+              dark
+              @click="confirmarExcluir = false"
+            >
+              Cancelar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-row>
     <v-snackbar v-model="snackbar" :color="color">
       <v-icon dark>
@@ -189,7 +220,9 @@ export default {
         'acima de 12 meses'
       ],
       snackbar: false,
-      loading: false
+      loading: false,
+      confirmarExcluir: false,
+      produtoExcluir: ''
     };
   },
   computed: {
@@ -355,10 +388,15 @@ export default {
       })
       fileReader.readAsDataURL(this.form.foto)
     },
-    excluirProduto (idProduto) {
+    confirmarExcluirProduto(produto) {
+      this.confirmarExcluir = true;
+      this.produtoExcluir = produto;
+    },
+    excluirProduto () {
       db.collection('produtos')
-        .doc(idProduto)
+        .doc(this.produtoExcluir.id)
         .delete()
+      this.confirmarExcluir = false;
     },
     aluguelProduto(produto){
       console.log(produto)
