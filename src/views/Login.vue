@@ -1,6 +1,6 @@
 <template>
 	<v-container class="fill-height login" fluid>
-		<v-row align="center" justify="bottom">
+		<v-row align="center">
 			<v-col cols="12" sm="8" md="4">
 				<div>
 					Login
@@ -11,7 +11,7 @@
 						</v-text-field>
 						<v-text-field id="password" label="Senha" solo v-model="password" name="password" type="password" placeholder="Digite sua senha">
 						</v-text-field>
-						</v-form>
+					</v-form>
 				</div>
 				<div>
 					<v-btn color="primary" @click="doLogin()" :disabled="loading" depressed >Entrar</v-btn>

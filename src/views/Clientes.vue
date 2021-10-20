@@ -56,10 +56,15 @@
                 <v-text-field outlined v-model="form.nome" label="Nome" required></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
+                <v-text-field outlined v-model="form.cpf" label="CPF" required></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" md="6">
                 <v-text-field outlined v-model="form.telefone" label="Telefone" required></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field outlined v-model="form.cpf" label="CPF" required></v-text-field>
+                <v-textarea outlined v-model="form.endereco" label="Endereco" required></v-textarea>
               </v-col>
             </v-row>
           </v-container>
@@ -89,6 +94,7 @@ export default {
         nome: '',
         telefone: '',
         cpf: '',
+        endereco: ''
       })
     return {
       search: '',
@@ -128,7 +134,8 @@ export default {
       db.collection("clientes").add({
         nome: self.form.nome,
         telefone: self.form.telefone,
-        cpf: self.form.cpf
+        cpf: self.form.cpf,
+        endereco: self.form.endereco
       })
       .then(() => {
         this.mostraSnackbar('success', 'mdi-checkbox-marked-circle', 'Cadastro realizado com sucesso');
@@ -153,13 +160,16 @@ export default {
         id: this.form.id,
         nome: this.form.nome,
         telefone: this.form.telefone,
-        cpf: this.form.cpf
+        cpf: this.form.cpf,
+        endereco: this.form.endereco
       }
       db.collection('clientes')
         .doc(this.form.id)
         .set(client)
         .then(() => {
-          console.log('client updated!')
+          this.mostraSnackbar('success', 'mdi-checkbox-marked-circle', 'Cliente atualizado com sucesso');
+          this.dialog = false
+          this.resetForm()
         })
     },
     resetForm () {
@@ -176,10 +186,13 @@ export default {
     },
     editarCliente (cliente) {
       this.acaoCliente = 'Editar Cliente'
-      this.form.id = cliente.id
-      this.form.nome = cliente.nome
-      this.form.telefone = cliente.telefone
-      this.form.cpf = cliente.cpf
+      this.form.id = cliente?.id
+      this.form.nome = cliente?.nome 
+      this.form.telefone = cliente?.telefone
+      this.form.cpf = cliente?.cpf
+      this.form.endereco = cliente?.endereco
+      console.log(cliente)
+      console.log(this.form)
       this.dialog = true
     },
     excluirCliente (cliente) {
@@ -196,7 +209,8 @@ export default {
     formIsValid () {
       return (
         this.form.nome &&
-        this.form.telefone
+        this.form.telefone,
+        this.form.endereco
       )
     },
   },

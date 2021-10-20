@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar class="top-bar" fixed color="white" dense elevate-on-scroll v-if="$route.name !== 'Login'">
         
-        <v-row justify="center" align="center">
+        <v-row align="center">
          <v-col v-if="$route.name !== 'Home'" cols="2">
            <v-btn icon to="/home">
              <v-icon dark>
