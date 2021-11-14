@@ -327,7 +327,7 @@ export default {
     },
     enviarMensagem (aluguel) {
       console.log(aluguel)
-      let dataAluguel = new Date(aluguel.dataAluguel.seconds*1000).toLocaleString('pt-BR')
+      let dataAluguel = new Date(aluguel.dataAluguel.seconds*1000).toLocaleDateString('pt-BR')
       let mensagem = `https://wa.me/+55${aluguel.cliente.telefone}/?text=Obrigado por alugar ${aluguel.produto.nome} data do aluguel foi ${dataAluguel}`
 
       console.log(mensagem);
