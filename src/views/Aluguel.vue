@@ -75,7 +75,7 @@
             
             <v-container class="container-add-edit">
               <v-row>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
                   <v-select outlined v-model="form.cliente" :items="clientes" label="Cliente" required
                     item-value="item"
                   >
@@ -87,7 +87,10 @@
                       </template>
                   </v-select>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" v-if="form.produto">
+                  <v-img  :src="retornaImagemProduto()"></v-img>
+                </v-col>
+                <v-col cols="12" md="4">
                   <v-select 
                     outlined 
                     v-model="form.produto" 
@@ -236,6 +239,9 @@ export default {
     },
   },
   methods: {
+    retornaImagemProduto() {
+      return `https://firebasestorage.googleapis.com/v0/b/clubinhodobebe-cd995.appspot.com/o/produtos%2F${this.form.produto.foto}?alt=media`;
+    },
     preenchePrecos () {
       this.precos = this.form.produto.precos;
     },
