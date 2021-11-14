@@ -5,7 +5,7 @@ class utils {
 			return v.toString(16);
 		});
 	}
-	static retonarUrlImagem(foto) {
+	static retornaUrlImagem(foto) {
 		return `https://firebasestorage.googleapis.com/v0/b/clubinhodobebe-cd995.appspot.com/o/produtos%2F${foto}?alt=media`;
 	}
 }

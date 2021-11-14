@@ -241,7 +241,7 @@ export default {
   },
   methods: {
     retornaImagemProduto(foto) {
-      return utils.retonarUrlImagem(foto);
+      return utils.retornaUrlImagem(foto);
     },
     preenchePrecos () {
       this.precos = this.form.produto.precos;

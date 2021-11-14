@@ -31,7 +31,7 @@
             </v-col>
           </v-row>
           <v-list-item class="item-inside-card" three-line :key="index">
-            <v-list-item-avatar tile size="100">
+            <v-list-item-avatar tile size="80">
               <v-img height="100%" width="100%" :src="retornaUrlFoto(produto.foto)"/>
             </v-list-item-avatar>                
             <v-list-item-content>
@@ -44,7 +44,7 @@
                 </v-row>
               </v-list-item-title>
               <v-list-item-subtitle>
-                {{ produto.descricao }}
+                {{ produto.codigo }}
               </v-list-item-subtitle>
               
               
