@@ -6,7 +6,7 @@
         <v-card class="mx-auto card-products" color="blue lighten-4" outlined>
           <v-row class="info-mounth" dense>
             <v-col>
-              <v-chip dark color="red lighten-3" dense x-small>Não entregue</v-chip>
+              <v-chip dark color="red lighten-3" dense x-small>Entregue</v-chip>
             </v-col>
             <v-col>
               <v-btn small color="indigo" disabled @click="editarAluguel(aluguel.id)">
@@ -25,13 +25,13 @@
           </v-row>
           <v-list-item class="item-inside-card" three-line :key="index">
             <v-list-item-avatar tile size="80">
-              <v-img height="100%" width="100%" src="../assets/toys.png"/>
+              <v-img height="100%" width="100%" :src="retornaImagemProduto(aluguel.produto.foto)"/>
             </v-list-item-avatar>                
             <v-list-item-content>
                 <v-container>
                     <v-row>
                         <b>
-                    {{ aluguel.produto.descricao }}
+                    {{ aluguel.produto.nome }}
                     </b>
                 </v-row>                
                 <v-row>
@@ -88,7 +88,7 @@
                   </v-select>
                 </v-col>
                 <v-col cols="12" v-if="form.produto">
-                  <v-img  :src="retornaImagemProduto()"></v-img>
+                  <v-img  :src="retornaImagemProduto(form.produto.foto)"></v-img>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-select 
@@ -184,6 +184,7 @@
 import firebase from "../firebase/index";
 import 'firebase/storage';
 import Vue from 'vue'
+import utils from '@/shared/utils';
 const db = firebase.firestore();
 
 Vue.filter('formatDate', function(value) {
@@ -200,15 +201,15 @@ export default {
   },
   data() {
     const defaultForm = Object.freeze({
-        produto: '',
-        cliente: '',
-        dataAluguel: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-        precoDia: {
-          dias: 10,
-          preco: 0
-        },
-        desconto: 0,
-        dataDevolucao: ''
+      produto: '',
+      cliente: '',
+      dataAluguel: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      precoDia: {
+        dias: 10,
+        preco: 0
+      },
+      desconto: 0,
+      dataDevolucao: ''
     })
     return {
       acaoAluguel: '',
@@ -239,8 +240,8 @@ export default {
     },
   },
   methods: {
-    retornaImagemProduto() {
-      return `https://firebasestorage.googleapis.com/v0/b/clubinhodobebe-cd995.appspot.com/o/produtos%2F${this.form.produto.foto}?alt=media`;
+    retornaImagemProduto(foto) {
+      return utils.retonarUrlImagem(foto);
     },
     preenchePrecos () {
       this.precos = this.form.produto.precos;
