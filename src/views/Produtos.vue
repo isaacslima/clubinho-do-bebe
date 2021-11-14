@@ -32,7 +32,7 @@
           </v-row>
           <v-list-item class="item-inside-card" three-line :key="index">
             <v-list-item-avatar tile size="80">
-              <v-img height="100%" width="100%" src="../assets/toys.png"/>
+              <v-img height="100%" width="100%" :src="produto.urlFoto"/>
             </v-list-item-avatar>                
             <v-list-item-content>
               <v-list-item-title color="#EB7A13" class="text-h5 mb-1">
@@ -98,7 +98,7 @@
               </v-row>
               <v-row cols="12">
                 <div class="image-produto">
-                  <v-img :src="imageUrl" contain height="300" aspect-ratio="1.7" />
+                  <v-img :src="imageUrl" contain height="300" width="300" aspect-ratio="1.7" />
                 </div>
               </v-row>
               <v-row>
@@ -201,6 +201,9 @@ export default {
         ],
       })
     return {
+      item: {
+        produtos: []
+      },
       acaoProduto: '',
       imageUrl: '',
       form: Object.assign({}, defaultForm),
@@ -234,6 +237,11 @@ export default {
         this.form.faixaEtaria &&
         this.form.precos
       )
+    },
+  },
+  watch: {
+    produtos() {
+      this.buscarProdutos();
     },
   },
   created() {
@@ -335,11 +343,12 @@ export default {
       this.icon = icon
       this.color = color
     },
-    buscarFoto (nomeFoto) {
+    buscarPreencherFoto (produto) {
+      console.log(produto)
       var self = this
       const storage = firebase.storage().ref();
-      storage.child( `produtos/${nomeFoto}`).getDownloadURL().then(function(url) {
-        return url;
+      storage.child( `produtos/${produto.foto}`).getDownloadURL().then(function(url) {
+        produto.urlFoto = url;
       }).catch(function(error) {
         self.mostraSnackbar('danger', '', `Não foi possível mostrar a imagem! Mensagem técnica ${error}`)
       });
@@ -354,32 +363,11 @@ export default {
       });
     },
     buscarProdutos () {
-      let _produtos = [];
-      var self = this
-      db.collection("produtos")
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          _produtos.push({
-            id: doc.id,
-            nome: doc.data().nome,
-            descricao: doc.data().descricao,
-            faixaEtaria: doc.data().faixaEtaria,
-            precos: doc.data().precos,
-            foto: doc.data().foto
-          });
-        });
-        self.produtos = _produtos;
-      })
-      .finally(() => {
-        self.produtos.forEach(element => {
-          var foto = self.buscarFoto(element.foto);
-          element.urlFoto = foto;
-        });
-      })
-      .catch((error) => {
-        self.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível buscar os produtos mensagem técnica: ${error}`);
+      if(this.produtos.length > 0){
+        this.produtos.forEach(element => {
+        this.buscarPreencherFoto(element);
       });
+      }
     },
     onFilePicked (){
       const fileReader = new FileReader()
@@ -403,9 +391,6 @@ export default {
       this.$router.push({ path: 'aluguel' })
     }
   },
-  mounted () {
-  },
-  
 };
 </script>
 <style>
@@ -427,14 +412,12 @@ export default {
 .info-mounth{
   position:relative;
   top: -14px;
+  z-index: 1;
 }
 .item-inside-card{
   margin-top: -30px;
 }
 .container-add-edit{
   margin-top: 48px;
-}
-.image-produto{
-
 }
 </style>
