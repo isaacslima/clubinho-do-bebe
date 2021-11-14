@@ -31,8 +31,8 @@
             </v-col>
           </v-row>
           <v-list-item class="item-inside-card" three-line :key="index">
-            <v-list-item-avatar tile size="80">
-              <v-img height="100%" width="100%" :src="produto.urlFoto"/>
+            <v-list-item-avatar tile size="100">
+              <v-img height="100%" width="100%" :src="retornaUrlFoto(produto.foto)"/>
             </v-list-item-avatar>                
             <v-list-item-content>
               <v-list-item-title color="#EB7A13" class="text-h5 mb-1">
@@ -51,17 +51,17 @@
             </v-list-item-content>
           </v-list-item>
           <v-card-actions>
-                <v-container fluid>
-                    <v-row >
-                      <v-col v-for="(preco) in produto.precos" :key="preco.id" cols="4" >
-                        <div class="label-price">
-                          <v-icon dark>mdi-calendar</v-icon> {{ preco.dias }} <br>
-                          R$ {{ preco.preco }}
-                        </div>
-                      </v-col>
-                    </v-row>  
-                  </v-container>
-              </v-card-actions>
+            <v-container fluid>
+              <v-row >
+                <v-col v-for="(preco) in produto.precos" :key="preco.id" cols="4" >
+                  <div class="label-price">
+                    <v-icon dark>mdi-calendar</v-icon> {{ preco.dias }} <br>
+                    R$ {{ preco.preco }}
+                  </div>
+                </v-col>
+              </v-row>  
+            </v-container>
+          </v-card-actions>
         </v-card>
       </v-container>
     </v-row>
@@ -201,9 +201,6 @@ export default {
         ],
       })
     return {
-      item: {
-        produtos: []
-      },
       acaoProduto: '',
       imageUrl: '',
       form: Object.assign({}, defaultForm),
@@ -239,15 +236,13 @@ export default {
       )
     },
   },
-  watch: {
-    produtos() {
-      this.buscarProdutos();
-    },
-  },
   created() {
     this.$root.$refs.Children = this;
   },
   methods: {
+    retornaUrlFoto(foto){
+      return `https://firebasestorage.googleapis.com/v0/b/clubinhodobebe-cd995.appspot.com/o/produtos%2F${foto}?alt=media`;
+    },
     resetForm () {
       this.form = Object.assign({}, this.defaultForm)
       this.$refs.form.reset()
@@ -267,7 +262,6 @@ export default {
       .get()
       .then(snapshot => {
         const document = snapshot.data()
-        console.log(document);
         this.form.nome = document.nome
         this.form.codigo = document?.codigo
         this.form.faixaEtaria = document.faixaEtaria
@@ -342,16 +336,6 @@ export default {
       this.mensagem = mensagem
       this.icon = icon
       this.color = color
-    },
-    buscarPreencherFoto (produto) {
-      console.log(produto)
-      var self = this
-      const storage = firebase.storage().ref();
-      storage.child( `produtos/${produto.foto}`).getDownloadURL().then(function(url) {
-        produto.urlFoto = url;
-      }).catch(function(error) {
-        self.mostraSnackbar('danger', '', `Não foi possível mostrar a imagem! Mensagem técnica ${error}`)
-      });
     },
     buscarFotoEdicao(nomeFoto){
       var self = this
