@@ -97,12 +97,12 @@
                     required
                     @change="preenchePrecos()"
                   >
-                  <template v-slot:selection="data">
-                    {{ data.item.descricao }}
-                  </template>
-                  <template v-slot:item="data">
-                    {{ data.item.descricao }}
-                  </template>
+                    <template v-slot:selection="data">
+                      {{ data.item.nome }}
+                    </template>
+                    <template v-slot:item="data">
+                      {{ data.item.nome }}
+                    </template>
                   </v-select>
                 </v-col>
               </v-row>
