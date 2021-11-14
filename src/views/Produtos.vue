@@ -241,7 +241,7 @@ export default {
   },
   methods: {
     retornaUrlFoto(foto){
-      return `https://firebasestorage.googleapis.com/v0/b/clubinhodobebe-cd995.appspot.com/o/produtos%2F${foto}?alt=media`;
+      return utils.retornaUrlImagem(foto);
     },
     resetForm () {
       this.form = Object.assign({}, this.defaultForm)
