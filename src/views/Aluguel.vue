@@ -195,7 +195,7 @@ Vue.filter('formatDate', function(value) {
 export default {
   name: "aluguel",
   firestore: {
-    alugueis: db.collection('aluguel'),
+    alugueis: db.collection('aluguel').orderBy("dataDevolucao", "asc"),
     produtos: db.collection('produtos'),
     clientes: db.collection('clientes')
   },
