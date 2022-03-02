@@ -326,11 +326,8 @@ export default {
         .delete()
     },
     enviarMensagem (aluguel) {
-      console.log(aluguel)
-      let dataAluguel = new Date(aluguel.dataAluguel.seconds*1000).toLocaleDateString('pt-BR')
-      let mensagem = `https://wa.me/+55${aluguel.cliente.telefone}/?text=Obrigado por alugar ${aluguel.produto.nome} data do aluguel foi ${dataAluguel}`
-
-      console.log(mensagem);
+      let dataVencimento = new Date(aluguel.dataDevolucao.seconds*1000).toLocaleDateString('pt-BR')
+      let mensagem = `https://wa.me/+55${aluguel.cliente.telefone}/?text=Obrigado por alugar *${aluguel.produto.nome}* data do vencimento: ${dataVencimento}`
       window.open(mensagem, '_blank')
     }
   },
