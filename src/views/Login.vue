@@ -37,6 +37,7 @@ export default {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
         .then((userCredencial) => {
 					var user = userCredencial.user;
+					//Todo save user to login automatically
 					console.log(user);
           this.$router.replace('/home')
         }).catch(function () {

@@ -191,8 +191,6 @@ export default {
       this.form.telefone = cliente?.telefone
       this.form.cpf = cliente?.cpf
       this.form.endereco = cliente?.endereco
-      console.log(cliente)
-      console.log(this.form)
       this.dialog = true
     },
     excluirCliente (cliente) {
@@ -201,6 +199,7 @@ export default {
         .delete()
     },
     aluguelCliente(cliente) {
+      //Todo redirect to rent of client
       console.log(cliente)
       this.$router.push({ path: 'aluguel' })
     }

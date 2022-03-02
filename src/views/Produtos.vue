@@ -307,7 +307,7 @@ export default {
         faixaEtaria: this.form.faixaEtaria,
         precos: this.form.precos
       }
-      
+
       const storage = firebase.storage().ref();
 
       storage.child(`produtos/${this.nomeFotoEdicao}`).put(this.form.foto)
@@ -376,6 +376,7 @@ export default {
       this.confirmarExcluir = false;
     },
     aluguelProduto(produto){
+      //Todo redirect to rent product
       console.log(produto)
       this.$router.push({ path: 'aluguel' })
     }
