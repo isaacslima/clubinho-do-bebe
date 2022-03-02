@@ -10,7 +10,7 @@
              </v-icon>
            </v-btn>
           </v-col>  
-          <v-col cols="6">
+          <v-col cols="5">
             <v-icon large color="cyan">
               {{ retornarIcone() }}
             </v-icon>
@@ -19,10 +19,10 @@
             </span>
           </v-col>
           <v-col v-if="$route.name !== 'Home'" cols="4">
-            <v-btn dark color="teal" @click="novoItem()">
+            <v-btn dark color="teal" @click="novoItem()" small>
               <v-icon dark left>
                 mdi-plus
-              </v-icon>Novo {{ $route.name }}
+              </v-icon>{{ $route.name }}
             </v-btn>
           </v-col>
         </v-row>

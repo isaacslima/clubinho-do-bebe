@@ -1,5 +1,5 @@
 <template>
-	<v-container class="fill-height login" fluid>
+	<v-container class="fill-height login">
 		<v-row align="center">
 			<v-col cols="12" sm="8" md="4">
 				<div>
@@ -7,14 +7,14 @@
 				</div>
 				<div>
 					<v-form>
-						<v-text-field label="Email" name="email" v-model="email" type="text" solo placeholder="Digite seu e-mail">
+						<v-text-field label="Email" name="email" v-model="email" type="text" solo placeholder="Digite seu e-mail" color="#D6F6F5">
 						</v-text-field>
 						<v-text-field id="password" label="Senha" solo v-model="password" name="password" type="password" placeholder="Digite sua senha">
 						</v-text-field>
 					</v-form>
 				</div>
 				<div>
-					<v-btn color="primary" @click="doLogin()" :disabled="loading" depressed >Entrar</v-btn>
+					<v-btn dark color="teal lighten-2" @click="doLogin()" :disabled="loading" depressed >Entrar</v-btn>
 				</div>
 			</v-col>
 		</v-row>

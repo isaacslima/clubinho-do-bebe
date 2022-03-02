@@ -1,7 +1,7 @@
 <template>
   <div class="produtos">
     <h1>Produtos</h1>
-    <v-row cols="12" md="12" style="margin-top: 31px"  v-for="(produto, index) in produtos" :key="produto.id">
+    <v-row cols="12" md="12" style="margin-top: 12px"  v-for="(produto, index) in produtos" :key="produto.id">
       <v-container>
         <v-card class="mx-auto card-products" color="blue lighten-4" outlined>
           <v-row class="info-mounth" dense>
@@ -10,57 +10,48 @@
             </v-col>
             <v-col>
               <v-btn small color="indigo" dark @click="editarProduto(produto.id)">
-                <v-icon dark left>
+                <v-icon dark>
                   mdi-pencil
-                </v-icon>Editar
+                </v-icon>
               </v-btn>
             </v-col>
             <v-col>
               <v-btn small dark @click="aluguelProduto(produto)">
-                <v-icon dark left >
+                <v-icon dark >
                   mdi-file-document-edit
-                </v-icon>Aluguel
+                </v-icon>
               </v-btn>
             </v-col>
             <v-col>
               <v-btn small color="red" dark @click="confirmarExcluirProduto(produto)">
-                <v-icon dark left>
+                <v-icon dark>
                   mdi-delete
-                </v-icon>Excluir
+                </v-icon>
               </v-btn>
             </v-col>
           </v-row>
           <v-list-item class="item-inside-card" three-line :key="index">
-            <v-list-item-avatar tile size="80">
+            <v-list-item-avatar tile size="60">
               <v-img height="100%" width="100%" :src="retornaUrlFoto(produto.foto)"/>
             </v-list-item-avatar>                
             <v-list-item-content>
-              <v-list-item-title color="#EB7A13" class="text-h5 mb-1">
-                <v-row>
-                  <v-col cols="6">
-                    {{ produto.nome }}
-                  </v-col>
-                  
-                </v-row>
+              <v-list-item-title color="#EB7A13" class="text-h5" style="white-space: initial">
+                {{ produto.nome }}  
               </v-list-item-title>
               <v-list-item-subtitle>
                 {{ produto.codigo }}
               </v-list-item-subtitle>
-              
-              
             </v-list-item-content>
           </v-list-item>
           <v-card-actions>
-            <v-container fluid>
-              <v-row >
+              <v-row no-gutters>
                 <v-col v-for="(preco) in produto.precos" :key="preco.id" cols="4" >
                   <div class="label-price">
-                    <v-icon dark>mdi-calendar</v-icon> {{ preco.dias }} <br>
+                    <v-icon dark small>mdi-calendar</v-icon> {{ preco.dias }}
                     R$ {{ preco.preco }}
                   </div>
                 </v-col>
               </v-row>  
-            </v-container>
           </v-card-actions>
         </v-card>
       </v-container>
@@ -92,7 +83,6 @@
                   accept="image/*" 
                   label="Foto"
                   @change="onFilePicked"
-                  :disabled="acaoProduto !== 'Adicionar Produto'"
                 >
                 </v-file-input>
               </v-row>
@@ -137,8 +127,12 @@
       >
         <v-card>
           <v-card-title class="font-weight-regular">
-            Deseja realmente excluir <br><span class="font-weight-bold">{{ produtoExcluir.nome }}</span>
+            Deseja realmente excluir?
           </v-card-title>
+          <v-card-subtitle>
+            <span class="font-weight-bold">{{ produtoExcluir.nome }}</span>
+          </v-card-subtitle>
+          
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
@@ -181,6 +175,7 @@ export default {
   data() {
     const defaultForm = Object.freeze({
         foto: '',
+        nomeFotoEdicao: '',
         nome: '',
         codigo: '',
         descricao: '',
@@ -268,6 +263,7 @@ export default {
         this.form.descricao = document.descricao
         this.form.precos = document.precos
         this.form.foto = document.foto
+        this.nomeFotoEdicao = document.foto,
         this.buscarFotoEdicao(this.form.foto)
       })
     },
@@ -275,7 +271,7 @@ export default {
       var self = this
       const storage = firebase.storage().ref();
       var nomeFoto = `${utils.newGuid()}.png`
-
+      
       storage.child(`produtos/${nomeFoto}`).put(this.form.foto)
       .then(
         db.collection("produtos").add({
@@ -301,25 +297,34 @@ export default {
       });
     },
     salvarProdutoEditado () {
+
       const produto = {
         id: this.form.id,
         nome: this.form.nome,
         codigo: this.form.codigo,
-        foto: this.form.foto,
+        foto: this.nomeFotoEdicao,
         descricao: this.form.descricao,
         faixaEtaria: this.form.faixaEtaria,
         precos: this.form.precos
       }
-      db.collection('produtos')
-        .doc(this.form.id)
-        .set(produto)
-        .then(()=> {
-          this.mostraSnackbar('success', 'mdi-checkbox-marked-circle', 'Cadastro Atualizado com sucesso');
-          this.dialog = false
-          this.resetForm()
-        })
-        .catch((error) => {
-          this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível atualizer o produto mensagem técnica: ${error}`);
+      
+      const storage = firebase.storage().ref();
+
+      storage.child(`produtos/${this.nomeFotoEdicao}`).put(this.form.foto)
+      .then(
+        db.collection('produtos')
+          .doc(this.form.id)
+          .set(produto)
+          .then(()=> {
+            this.mostraSnackbar('success', 'mdi-checkbox-marked-circle', 'Cadastro Atualizado com sucesso');
+            this.dialog = false
+            this.resetForm()
+          })
+          .catch((error) => {
+            this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível atualizer o produto mensagem técnica: ${error}`);
+          })
+      ).catch((error) => {
+            this.mostraSnackbar('danger', 'mdi-checkbox-marked-circle', `Não foi possível atualizer a foto do produto mensagem técnica: ${error}`);
       })
     },
     salvar () {
@@ -391,6 +396,7 @@ export default {
   border-radius: 3px;
   color: white;
   padding: 3px;
+  font-size: 12px;
   display: inline-block
 }
 .info-mounth{
